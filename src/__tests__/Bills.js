@@ -8,7 +8,22 @@ import { bills } from "../fixtures/bills.js"
 import { ROUTES_PATH} from "../constants/routes.js";
 import {localStorageMock} from "../__mocks__/localStorage.js";
 
+
 import router from "../app/Router.js";
+
+console.log("TEst")
+
+document.body.innerHTML = BillsUI({ data: bills })
+      
+const dates = screen.getAllByText(/^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/i).map(a => a.innerHTML)
+const antiChrono = (a, b) => ((a < b) ? 1 : -1)
+const datesSorted = [...dates].sort(antiChrono)
+
+console.log(dates)
+console.log(datesSorted)
+
+
+
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
@@ -28,12 +43,19 @@ describe("Given I am connected as an employee", () => {
       //to-do write expect expression
 
     })
-    test("Then bills should be ordered from earliest to latest", () => {
+
+    test("Then bills should be ordered from earliest to latest (faux, décroissant, c le contraire)", () => {
       document.body.innerHTML = BillsUI({ data: bills })
+
       const dates = screen.getAllByText(/^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/i).map(a => a.innerHTML)
       const antiChrono = (a, b) => ((a < b) ? 1 : -1)
       const datesSorted = [...dates].sort(antiChrono)
       expect(dates).toEqual(datesSorted)
+      console.log(dates)
+      console.log(datesSorted)
+     
     })
   })
 })
+
+
