@@ -27,6 +27,7 @@ export default class {
     $('#modaleFile').modal('show')
   }
 
+  // modify this function to sort bills by date!
   getBills = () => {
     if (this.store) {
       return this.store
@@ -52,9 +53,30 @@ export default class {
               }
             }
           })
+          bills.forEach((bill)=>{
+            console.log(typeof(bill.date))
+            bill.date = new Date(bill.date);
+            console.log(bill.date)
+          })
+          console.log("Bills",bills)
           console.log('length', bills.length)
         return bills
       })
     }
   }
+}
+
+
+
+function sortByDate(data1,date2){
+  if(data1<date2){
+    return -1
+  }
+  else if (data1>date2){
+    return 1
+  }
+  else{
+    return 0;
+  }
+
 }

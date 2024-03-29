@@ -38,6 +38,7 @@ class ApiEntity {
   async select({selector, headers = {}}) {
     return await (this.api.get({url: `/${this.key}/${selector}`, headers: getHeaders(headers)}))
   }
+  //function that retrieves bills
   async list({headers = {}} = {}) {
     return await (this.api.get({url: `/${this.key}`, headers: getHeaders(headers)}))
   }
