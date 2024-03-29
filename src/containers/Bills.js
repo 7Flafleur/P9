@@ -57,10 +57,11 @@ export default class {
             bill.date = new Date(bill.date);
             console.log(bill.date)
           })
-          let sortedbills=bills.sort(compareDates)
+          let sortedbills=bills.sort(compareBillDates)
           console.log("Bills",sortedbills)
           console.log('length', bills.length)
-        return bills
+          console.log("Bills sorted",sortedbills)
+        return sortedbills
       })
     }
   }
@@ -68,12 +69,12 @@ export default class {
 
 
 
-function compareDates(data1,date2){
-  if(data1<date2){
-    return -1
-  }
-  else if (data1>date2){
+function compareBillDates(bill1,bill2){
+  if(bill1.date<bill2.date){
     return 1
+  }
+  else if (bill1.date>bill2.date){
+    return -1
   }
   else{
     return 0;
