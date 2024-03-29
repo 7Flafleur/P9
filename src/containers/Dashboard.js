@@ -5,14 +5,23 @@ import { ROUTES_PATH } from '../constants/routes.js'
 import USERS_TEST from '../constants/usersTest.js'
 import Logout from "./Logout.js"
 
+
+function compareDates(date1,date2){
+
+}
+
+
+
+
+
 export const filteredBills = (data, status) => {
-  return (data && data.length) ?
-    data.filter(bill => {
+  return (data && data.length) ?      //if data and its length are !=null
+    data.filter(bill => {                                                  //filter bills by condition that is defined later in code
       let selectCondition
 
       // in jest environment
       if (typeof jest !== 'undefined') {
-        selectCondition = (bill.status === status)
+        selectCondition = (bill.status === status)          //condition: status 
       }
       /* istanbul ignore next */
       else {
@@ -20,12 +29,15 @@ export const filteredBills = (data, status) => {
         const userEmail = JSON.parse(localStorage.getItem("user")).email
         selectCondition =
           (bill.status === status) &&
-          ![...USERS_TEST, userEmail].includes(bill.email)
+          ![...USERS_TEST, userEmail].includes(bill.email)       
       }
 
       return selectCondition
-    }) : []
+    }) : []                          //else part of ternary 
 }
+
+
+
 
 export const card = (bill) => {
   const firstAndLastNames = bill.email.split('@')[0]
@@ -34,7 +46,8 @@ export const card = (bill) => {
   const lastName = firstAndLastNames.includes('.') ?
   firstAndLastNames.split('.')[1] : firstAndLastNames
 
-  return (`
+  return (console.log(bill.date)
+    `
     <div class='bill-card' id='open-bill${bill.id}' data-testid='open-bill${bill.id}'>
       <div class='bill-card-name-container'>
         <div class='bill-card-name'> ${firstName} ${lastName} </div>
@@ -51,6 +64,8 @@ export const card = (bill) => {
     </div>
   `)
 }
+
+
 
 export const cards = (bills) => {
   return bills && bills.length ? bills.map(bill => card(bill)).join("") : ""
@@ -173,6 +188,13 @@ export default class {
       })
     }
   }
+
+
+
+
+
+
+
 
   // not need to cover this function by tests
   /* istanbul ignore next */
