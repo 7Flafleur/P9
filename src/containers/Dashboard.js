@@ -6,9 +6,7 @@ import USERS_TEST from '../constants/usersTest.js'
 import Logout from "./Logout.js"
 
 
-function compareDates(date1,date2){
 
-}
 
 
 

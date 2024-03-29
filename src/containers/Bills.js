@@ -54,11 +54,11 @@ export default class {
             }
           })
           bills.forEach((bill)=>{
-            console.log(typeof(bill.date))
             bill.date = new Date(bill.date);
             console.log(bill.date)
           })
-          console.log("Bills",bills)
+          let sortedbills=bills.sort(compareDates)
+          console.log("Bills",sortedbills)
           console.log('length', bills.length)
         return bills
       })
@@ -68,7 +68,7 @@ export default class {
 
 
 
-function sortByDate(data1,date2){
+function compareDates(data1,date2){
   if(data1<date2){
     return -1
   }
