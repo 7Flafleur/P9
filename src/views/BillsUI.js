@@ -52,6 +52,7 @@ export default ({ data: bills=[], loading, error }) => {
             bill.date = bill.date.toISOString().split('T')[0];  // convert back to string
           });
 
+          
 
   const modal = () => (`
     <div class="modal fade" id="modaleFile" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
