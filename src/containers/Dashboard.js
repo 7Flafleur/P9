@@ -44,9 +44,10 @@ export const card = (bill) => {
   const lastName = firstAndLastNames.includes('.') ?
   firstAndLastNames.split('.')[1] : firstAndLastNames
 
-  return (
+  return (                                                                                //pourquoi open dès le départ?
     `
-    <div class='bill-card' id='open-bill${bill.id}' data-testid='open-bill${bill.id}'>
+    <div class='bill-card' id='open-bill${bill.id}' data-testid='open-bill${bill.id}'> 
+
       <div class='bill-card-name-container'>
         <div class='bill-card-name'> ${firstName} ${lastName} </div>
         <span class='bill-card-grey'> ... </span>
@@ -158,8 +159,8 @@ export default class {
       this.counter ++
     }
 
-    bills.forEach(bill => {
-      $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
+    bills.forEach(bill => { // remove previous event listener so that counter stores correct value
+      $(`#open-bill${bill.id}`).off('click').click((e) => this.handleEditTicket(e, bill, bills))
     })
 
     return bills
