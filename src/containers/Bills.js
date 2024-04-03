@@ -55,27 +55,6 @@ export default class {
           })
 
 
-          // bills.forEach((bill)=>{
-          //   console.log("Date as string:",bill.date)})
-
-          // console.log("Bills with string dates",bills)
-
-          // bills.forEach((bill)=>{
-          //   console.log("Date as string:",bill.date)
-          //   bill.date = new Date(bill.date);
-          //   console.log("Date as date:",bill.date)
-
-          // })
-
-          // bills=bills.sort(compareBillDatesDesc)
-          // console.log("Bills",bills)
-          // console.log('length', bills.length)
-          // console.log("Bills sorted",bills)
-
-          // bills.forEach((bill) => {
-          //   bill.date = bill.date.toISOString().split('T')[0];  // convert back to string
-          // });
-
           
 
         return bills;
@@ -86,41 +65,3 @@ export default class {
 
 
 
-function compareBillDatesDesc(bill1,bill2){
-  if(bill1.date<bill2.date){
-    return 1                                  //bill2 should come before bill1
-  }
-  else if (bill1.date>bill2.date){
-    return -1
-  }
-  else{
-    return 0;
-  }
-
-}
-
-function compareBillDatesAsc(bill1,bill2){
-  if(bill1.date>bill2.date){                 // bill1 should come after bill2
-    return 1
-  }
-  else if (bill1.date<bill2.date){
-    return -1
-  }
-  else{
-    return 0;
-  }
-
-}
-
-
-function formatDateToYYYYDDMM(dateObj) {
-  let year = dateObj.getFullYear();
-  let day = dateObj.getDate();
-  let month = dateObj.getMonth() + 1; // getMonth() returns 0-11
-
-  // Pad day and month with zeros if needed
-  day = day < 10 ? '0' + day : day;
-  month = month < 10 ? '0' + month : month;
-
-  return `${year}-${day}-${month}`;
-}
