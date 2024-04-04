@@ -8,10 +8,24 @@ import BillsUI from "../views/BillsUI.js"
 import { bills } from "../fixtures/bills.js"
 import { ROUTES_PATH} from "../constants/routes.js";
 import {localStorageMock} from "../__mocks__/localStorage.js";
+import {localmockStore} from'../__mocks__/store.js'
+import RealBills from "../containers/Bills.js"
 
 import router from "../app/Router.js";
 
 describe("Given I am connected as an employee", () => {
+  let realbills;
+  let mockFunction;
+
+  // Mock data
+const mockDocument = { 
+  querySelector: jest.fn().mockReturnValue({ addEventListener: jest.fn() }),
+  querySelectorAll: jest.fn().mockReturnValue([{ addEventListener: jest.fn() }])
+};
+const mockOnNavigate = jest.fn();
+const mockStore = localmockStore; 
+const mockLocalStorage = localStorageMock; 
+
   describe("When I am on Bills Page", () => {
     document.body.innerHTML = BillsUI({ data: bills }) //when on Bills page, body always needs to be rendered with billsUI
     test("Then bill icon in vertical layout should be highlighted", async () => {
@@ -39,9 +53,25 @@ describe("Given I am connected as an employee", () => {
       expect(dates).toEqual(datesSorted)
     })
 
-    // test("Clicking on newBills button should redirect me to NewBills page",()=>{
+    test("Clicking on newBills button should redirect me to NewBills page", () => {
+      realbills = new RealBills({
+        document: mockDocument,
+        onNavigate: mockOnNavigate,
+        store: mockStore,
+        localStorage: mockLocalStorage
+      });
+    
+      // Mock the handleClickNewBill method
+      realbills.handleClickNewBill = jest.fn();
+    
+      // Simulate a click on the newBills button
+      realbills.handleClickNewBill();
+    
+      // Check that handleClickNewBill was called
+      expect(realbills.handleClickNewBill).toHaveBeenCalled();
+    });
 
-    // })
+
 
 
 
