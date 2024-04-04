@@ -88,22 +88,34 @@ mockbills = new RealBills({
       const newBIllForm=dom.screen.getByTestId('form-new-bill')
       expect(newBIllForm).toBeInTheDocument()
 
+      realbills=null;
 
     });
 
     test("Clicking on eye icon opens up modal with bill in it", ()=>{
-      const handleClickIconEye = jest.fn(mockbills.handleClickIconEye)  //??
+
+      realbills = new RealBills({
+        document: document,
+        onNavigate: onNavigate,
+        store: localmockStore,
+        localStorage: localStorage
+      });
+
+      // Create a mock function for handleClickIconEye
+const mockHandleClickIconEye = jest.fn();
+// Mock jQuery's modal function
+$.fn.modal = jest.fn();
+
+// Replace handleClickIconEye with the mock function
+
+      
       const eye = document.querySelector("[data-billid='47qAXb6fIm2zOKkLzMro']");
 
       console.log(eye)
 
-      // $.fn.modal = jest.fn().mockImplementationOnce() 
-
-      // console.log(eye)
-
-      // eye.addEventListener('click', handleClickIconEye)
-      // dom.fireEvent.click(eye)
-      // expect(handleClickIconEye).toHaveBeenCalled()
+      eye.addEventListener('click', mockHandleClickIconEye)
+      dom.fireEvent.click(eye)
+      expect(mockHandleClickIconEye).toHaveBeenCalled()
 
       // const modale = dom.screen.getByTestId('modal-dialog')
       // expect(modale).toBeTruthy()
