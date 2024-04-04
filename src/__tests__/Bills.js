@@ -15,7 +15,7 @@ import router from "../app/Router.js";
 
 describe("Given I am connected as an employee", () => {
   let realbills;
-  let mockFunction;
+  let mockbills;
 
   // Mock data
 const mockDocument = { 
@@ -25,6 +25,21 @@ const mockDocument = {
 const mockOnNavigate = jest.fn();
 const mockStore = localmockStore; 
 const mockLocalStorage = localStorageMock; 
+
+
+//mock instance
+
+mockbills = new RealBills({
+  document: mockDocument,
+  onNavigate: mockOnNavigate,
+  store: mockStore,
+  localStorage: mockLocalStorage
+});
+
+
+
+
+
 
   describe("When I am on Bills Page", () => {
     document.body.innerHTML = BillsUI({ data: bills }) //when on Bills page, body always needs to be rendered with billsUI
