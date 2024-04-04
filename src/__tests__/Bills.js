@@ -103,24 +103,28 @@ mockbills = new RealBills({
 
       // Create a mock function for handleClickIconEye
 const mockHandleClickIconEye = jest.fn();
+
 // Mock jQuery's modal function
 $.fn.modal = jest.fn();
-
-// Replace handleClickIconEye with the mock function
-
       
       const eye = document.querySelector("[data-billid='47qAXb6fIm2zOKkLzMro']");
 
       console.log(eye)
 
-      eye.addEventListener('click', mockHandleClickIconEye)
+      eye.addEventListener('click', realbills.handleClickIconEye(eye))
+      eye.addEventListener('click', console.log(eye))
       dom.fireEvent.click(eye)
-      expect(mockHandleClickIconEye).toHaveBeenCalled()
+
+   
+        // Check that the modal function was called
+  expect($.fn.modal).toHaveBeenCalledWith('show');
 
       // const modale = dom.screen.getByTestId('modal-dialog')
       // expect(modale).toBeTruthy()
 
     })
+
+
 
 
 
