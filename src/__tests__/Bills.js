@@ -55,20 +55,25 @@ const mockLocalStorage = localStorageMock;
 
     test("Clicking on newBills button should redirect me to NewBills page", () => {
       realbills = new RealBills({
-        document: mockDocument,
-        onNavigate: mockOnNavigate,
-        store: mockStore,
-        localStorage: mockLocalStorage
+        document: document,
+        onNavigate: onNavigate,
+        store: localmockStore,
+        localStorage: localStorage
       });
     
       // Mock the handleClickNewBill method
-      realbills.handleClickNewBill = jest.fn();
+      realbills.handleClickNewBill = jest.spyOn(realbills, 'handleClickNewBill');
     
       // Simulate a click on the newBills button
       realbills.handleClickNewBill();
     
       // Check that handleClickNewBill was called
       expect(realbills.handleClickNewBill).toHaveBeenCalled();
+      
+      const newBIllForm=dom.screen.getByTestId('form-new-bill')
+      expect(newBIllForm).toBeInTheDocument()
+
+
     });
 
 
