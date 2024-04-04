@@ -17,36 +17,31 @@ const row = (bill) => {
       <td>${bill.amount} €</td>
       <td>${bill.status}</td>
       <td>
-        ${Actions(bill.fileUrl)}
+        ${Actions(bill.fileUrl,bill.id)}
       </td>
     </tr>
     `)
   }
 
+//function that provides bills
 const rows = (data) => {
   return (data && data.length) ? data.map(bill => row(bill)).join("") : ""
 }
 
 export default ({ data: bills=[], loading, error }) => {
 
-  // console.log("Bills data",bills);
 
-  //  bills.forEach((bill)=>{
-  //           console.log("Date as string:",bill.date)})
-
-  //           console.log("Bills with string dates",bills)
 
           bills.forEach((bill)=>{
             // console.log("Date as string:",bill.date)
             bill.date = new Date(bill.date);
             // console.log("Date as date:",bill.date)
+          
 
           })
 
           bills=bills.sort(compareBillDatesDesc)
-          // console.log("Bills",bills)
-          // console.log('length', bills.length)
-          // console.log("Bills sorted",bills)
+
 
           bills.forEach((bill) => {
             bill.date = bill.date.toISOString().split('T')[0];  // convert back to string
