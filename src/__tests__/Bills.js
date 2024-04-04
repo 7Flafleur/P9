@@ -91,6 +91,25 @@ mockbills = new RealBills({
 
     });
 
+    test("Clicking on eye icon opens up modal with bill in it", ()=>{
+      const handleClickIconEye = jest.fn(mockbills.handleClickIconEye)  //??
+      const eye = document.querySelector("[data-billid='47qAXb6fIm2zOKkLzMro']");
+
+      console.log(eye)
+
+      // $.fn.modal = jest.fn().mockImplementationOnce() 
+
+      // console.log(eye)
+
+      // eye.addEventListener('click', handleClickIconEye)
+      // dom.fireEvent.click(eye)
+      // expect(handleClickIconEye).toHaveBeenCalled()
+
+      // const modale = dom.screen.getByTestId('modal-dialog')
+      // expect(modale).toBeTruthy()
+
+    })
+
 
 
 
