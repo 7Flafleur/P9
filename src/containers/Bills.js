@@ -37,7 +37,8 @@ export default class {
         let bills = snapshot
           .map(doc => {
             try {
-              console.log(doc.date)            //check for errors
+              console.log(formatDate(doc.date))            //check for errors
+
               return {
                 ...doc,
                 date: formatDate(doc.date),
