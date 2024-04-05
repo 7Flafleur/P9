@@ -5,6 +5,7 @@ import LoadingPage from "./LoadingPage.js"
 
 
 import Actions from './Actions.js'
+import { formatDate } from '../app/format.js'
 
 // const bills=getBills()
 
@@ -33,19 +34,20 @@ export default ({ data: bills=[], loading, error }) => {
 
 
           bills.forEach((bill)=>{
-            // console.log("Date as string:",bill.date)
-            bill.date = new Date(bill.date);
-            // console.log("Date as date:",bill.date)
+           console.log("original date bills ui"
+           ,bill.originaldate)
+
+           bill.date = convertDateFormat(bill.date)
+            
+
           
 
           })
+          bills=bills.sort(compareBillDatesDesc1)
+          // bills.forEach((bill)=>{
+          //   bill.date=formatDate(bill.date)
+          // })
 
-          bills=bills.sort(compareBillDatesDesc)
-
-
-          bills.forEach((bill) => {
-            bill.date = bill.date.toISOString().split('T')[0];  // convert back to string
-          });
 
           
 
@@ -105,7 +107,7 @@ export default ({ data: bills=[], loading, error }) => {
 
 
 
-export function compareBillDatesDesc(bill1,bill2){
+export function compareBillDatesDesc1(bill1,bill2){
   if(bill1.date<bill2.date){
     return 1                                  //bill2 should come before bill1
   }
@@ -117,6 +119,40 @@ export function compareBillDatesDesc(bill1,bill2){
   }
 
 }
+
+
+export function compareBillDatesDesc(bill1,bill2){
+  if(bill1.originaldate<bill2.originaldate){
+    return 1                                  //bill2 should come before bill1
+  }
+  else if (bill1.originaldate>bill2.originaldate){
+    return -1
+  }
+  else{
+    return 0;
+  }
+
+}
+
+
+
+function convertDateFormat(dateString) {
+  // Create a new Date object
+  const date = new Date(dateString);
+
+  // Get the year, month, and day
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1; // getMonth returns a zero-based month, so add 1
+  const day = date.getDate();
+
+  // Pad the month and day with leading zeros if necessary
+  const paddedMonth = month.toString().padStart(2, '0');
+  const paddedDay = day.toString().padStart(2, '0');
+
+  // Return the date in the "yyyy-mm-dd" format
+  return `${year}-${paddedMonth}-${paddedDay}`;
+}
+
 
 // function compareBillDatesAsc(bill1,bill2){
 //   if(bill1.date>bill2.date){                 // bill1 should come after bill2
