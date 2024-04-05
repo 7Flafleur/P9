@@ -58,10 +58,7 @@ export default class {
             }
           })
 
-        bills.forEach((bill)=>{
-          console.log("date bills",bill.date)
-          console.log("original date bills",bill.originaldate)
-        })
+    
         
        
 
@@ -72,16 +69,3 @@ export default class {
 }
 
 
-
-export function compareBillDatesDesc(bill1,bill2){
-  if(bill1.originaldate<bill2.originaldate){
-    return 1                                  //bill2 should come before bill1
-  }
-  else if (bill1.originaldate>bill2.originaldate){
-    return -1
-  }
-  else{
-    return 0;
-  }
-
-}

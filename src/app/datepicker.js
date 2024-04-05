@@ -268,7 +268,7 @@ class Datepicker {
             this.setDate(date);
             return;
         }
-        this.date = date;
+        this.date = date;                                                     //change to make dates conform?
         this.host.value = this.format(date);
         if(typeof this.host.onchange == "function") this.host.onchange();
     }

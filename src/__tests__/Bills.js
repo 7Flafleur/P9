@@ -125,6 +125,7 @@ $.fn.modal = jest.fn();
     })
 
 
+    //test getbills with corrupted data?
 
 
 

@@ -34,8 +34,8 @@ export default ({ data: bills=[], loading, error }) => {
 
 
           bills.forEach((bill)=>{
-           console.log("original date bills ui"
-           ,bill.originaldate)
+          //  console.log("original date bills ui"
+          //  ,bill.originaldate)
 
            bill.date = convertDateFormat(bill.date)
             
