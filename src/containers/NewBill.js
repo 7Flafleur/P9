@@ -20,19 +20,14 @@ export default class NewBill {
   handleChangeFile = e => {
     e.preventDefault()
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
+    console.log("File:", file)
+    console.log("Target value",e.target.value)
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
 
-      // Get the file extension
-  const fileExtension = fileName.split('.').pop()
+    
 
-  // Check the file extension
-  if (fileExtension !== 'jpg' && fileExtension !== 'png' && fileExtension !== 'jpeg') {
-    console.error('Invalid file extension')
-    return false;
-  }
-
-
+checkFileExtension(fileName)
 
     const formData = new FormData()
     const email = JSON.parse(localStorage.getItem("user")).email
@@ -106,4 +101,26 @@ export default class NewBill {
       .catch(error => console.error(error))
     }
   }
+}
+
+
+
+
+
+
+
+
+
+function checkFileExtension(fileName){
+  
+      // Get the file extension
+      const fileExtension = fileName.split('.').pop()
+
+      // Check the file extension
+      if (fileExtension !== 'jpg' && fileExtension !== 'png' && fileExtension !== 'jpeg') {
+        // console.error('Invalid file extension')
+        // alert("invalid file extention")
+        return false;
+      }
+    
 }

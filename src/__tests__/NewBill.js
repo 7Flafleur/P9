@@ -8,6 +8,7 @@ import {localStorageMock} from "../__mocks__/localStorage.js";
 import {localmockStore} from'../__mocks__/store.js'
 import NewBillUI from "../views/NewBillUI.js"
 import NewBill from "../containers/NewBill.js"
+import checkFileExtension from "../containers/NewBill.js"
 import { ROUTES_PATH} from "../constants/routes.js";
 
 
@@ -30,14 +31,61 @@ describe("Given I am connected as an employee", () => {
       //   localStorage:localStorage        //use storage set above 
       // })
     
-    
+    const mockfile={name: "database_dev.sqlite", lastModified: 1711796144723, webkitRelativePath: "", size: 24576, type: "" }
 
     test("File extensions other than jpg,jpeg or png are refused", () => {
+      const mockEventFile = {
+        preventDefault: jest.fn(),
+        target: {
+          value: 'C:\\fakepath\\database_dev.sqlite',
+          querySelector: jest.fn().mockImplementation((selector) => {
+            if (selector === 'input[data-testid="file"]') {
+              return { files: [new File([''], 'database_dev.sqlite')] };
+            }
+            return null;
+          }),
+        },
+      };
+  
+      const mockOnNavigate=jest.fn();
+      const checkFileExtension = jest.fn();
+    
+      // Mock localStorage.getItem
+      const mockLocalStorageGetItem = jest.spyOn(window.localStorage.__proto__, 'getItem');
+      mockLocalStorageGetItem.mockImplementation(() => JSON.stringify({ email: 'test@example.com' }));
+    
+      const localmockStoreh = {
+        bills: jest.fn().mockReturnValue({
+          create: jest.fn().mockResolvedValue({ fileUrl: 'url', key: 'key' }),
+        }),
+      };
+
+  // Create an instance of the class that contains handlechangeFile
+  const newBillhandle = new NewBill({
+    document: document,
+    onNavigate: mockOnNavigate,
+    localStorage: window.localStorage,
+    store: localmockStoreh,
+  });
+  
+
+  // Call  with the mock event
+  newBillhandle.handleChangeFile(mockEventFile);
+  
+
+    
+      // Check that preventDefault was called
+      expect(mockEventFile.preventDefault).toHaveBeenCalled();
+      // expect(checkFileExtension).toHaveBeenCalledWith('file.txt');
+    
+
      
       
       
-      //to-do write assertion
-    });
+   
+    }); //end file extensions
+
+
 
 
 
@@ -114,7 +162,8 @@ instance.handleSubmit(mockEvent);
   
     // Check that onNavigate was called with the correct path
     expect(mockOnNavigate).toHaveBeenCalledWith(ROUTES_PATH['Bills']);
-  });
+ 
+  }); // end test  handlesubmit
   
 
 
