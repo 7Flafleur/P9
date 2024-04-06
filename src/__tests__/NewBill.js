@@ -42,10 +42,7 @@ describe("Given I am connected as an employee", () => {
 
 
 
-test("If required fields are not filled in , form will not be sent",()=>{
 
-
-});
 
 
 test('handleSubmit', () => {
