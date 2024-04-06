@@ -24,8 +24,10 @@ const row = (bill) => {
     `)
   }
 
-//function that provides bills
+//function that provides bills               
 const rows = (data) => {
+  //sort data here  
+  
   return (data && data.length) ? data.map(bill => row(bill)).join("") : ""
 }
 
@@ -37,11 +39,8 @@ export default ({ data: bills=[], loading, error }) => {
           //  console.log("original date bills ui"
           //  ,bill.originaldate)
 
-           bill.date = convertDateFormat(bill.date)
-            
-
-          
-
+           bill.date = convertDateFormat(bill.date)      //
+     
           })
           bills=bills.sort(compareBillDatesDesc1)
           // bills.forEach((bill)=>{

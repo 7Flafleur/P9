@@ -42,7 +42,7 @@ export default class {
 
               return {
                 ...doc,
-                originaldate:doc.date,
+                originaldate:doc.date,  //date en format yyyy-mm-dd
                 date: formatDate(doc.date),
                 status: formatStatus(doc.status)
               }
