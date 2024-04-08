@@ -39,6 +39,9 @@ mockbills = new RealBills({
 
 
 
+
+
+
   describe("When I am on Bills Page", () => {
     document.body.innerHTML = BillsUI({ data: bills }) //when on Bills page, body always needs to be rendered with billsUI
     test("Then bill icon in vertical layout should be highlighted", async () => {
@@ -58,9 +61,27 @@ mockbills = new RealBills({
       expect(windowIcon).toHaveClass('active-icon')
 
     })
+    function convertDateFormat(dateStr) {
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const [day, month, year] = dateStr.split(' ');  //extract element from datestring
+      const paddedMonth = (months.indexOf(month) + 1).toString().padStart(2, '0');  //add 0 to index of month if it only has one digit (less than 10)
+      const currentYear = new Date().getFullYear(); // get current date
+      const century = year > currentYear % 100 ? '19' : '20'; //divide by 100 to get current year in two digit format
+      return `${century}${year}-${paddedMonth}-${day}`; //if date year is greater than current year, set first two digits of year to 19, else to 20
+        }
+
     test("Then bills should be ordered from earliest to latest", () => {
+      let dates = Array.from(document.querySelectorAll(".date")).map(el => el.innerHTML);   
+         console.log(dates)
+      
+       dates = dates.map(convertDateFormat);
+       console.log(dates)
+
       // document.body.innerHTML = BillsUI({ data: bills })
-      const dates = dom.screen.getAllByText(/^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/i).map(a => a.innerHTML)
+      // const dateRegex = /\b\d{2} [A-Z][a-z]{2}\. \d{2}\b/;
+      // const dates = dom.screen.getAllByText(dateRegex).map(a => a.innerHTML)
+      // console.log(dates1)
+      // // const dates = dom.screen.getAllByText(/^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/i).map(a => a.innerHTML)
       const antiChrono = (a, b) => ((a < b) ? 1 : -1)
       const datesSorted = [...dates].sort(antiChrono)
       expect(dates).toEqual(datesSorted)
@@ -107,10 +128,10 @@ $.fn.modal = jest.fn();
       
       const eye = document.querySelector("[data-billid='47qAXb6fIm2zOKkLzMro']");
 
-      console.log(eye)
+      
 
       eye.addEventListener('click', realbills.handleClickIconEye(eye))
-      eye.addEventListener('click', console.log(eye))
+      
       dom.fireEvent.click(eye)
 
    
