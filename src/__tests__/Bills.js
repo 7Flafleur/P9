@@ -6,10 +6,11 @@ import '@testing-library/jest-dom/extend-expect';   // import
 import * as dom from "@testing-library/dom"  // import entire library
 import BillsUI from "../views/BillsUI.js"
 import { bills } from "../fixtures/bills.js"
-import { ROUTES_PATH} from "../constants/routes.js";
-import {localStorageMock} from "../__mocks__/localStorage.js";
-import {localmockStore} from'../__mocks__/store.js'
+import { ROUTES_PATH } from "../constants/routes.js";
+import { localStorageMock } from "../__mocks__/localStorage.js";
+import { localmockStore } from '../__mocks__/store.js'
 import RealBills from "../containers/Bills.js"
+import { formatDate,formatStatus } from '../app/format.js';
 
 import router from "../app/Router.js";
 
@@ -18,23 +19,23 @@ describe("Given I am connected as an employee", () => {
   let mockbills;
 
   // Mock data
-const mockDocument = { 
-  querySelector: jest.fn().mockReturnValue({ addEventListener: jest.fn() }),
-  querySelectorAll: jest.fn().mockReturnValue([{ addEventListener: jest.fn() }])
-};
-const mockOnNavigate = jest.fn();
-const mockStore = localmockStore; 
-const mockLocalStorage = localStorageMock; 
+  const mockDocument = {
+    querySelector: jest.fn().mockReturnValue({ addEventListener: jest.fn() }),
+    querySelectorAll: jest.fn().mockReturnValue([{ addEventListener: jest.fn() }])
+  };
+  const mockOnNavigate = jest.fn();
+  const mockStore = localmockStore;
+  const mockLocalStorage = localStorageMock;
 
 
-//mock instance
+  //mock instance
 
-mockbills = new RealBills({
-  document: mockDocument,
-  onNavigate: mockOnNavigate,
-  store: mockStore,
-  localStorage: mockLocalStorage
-});
+  mockbills = new RealBills({
+    document: mockDocument,
+    onNavigate: mockOnNavigate,
+    store: mockStore,
+    localStorage: mockLocalStorage
+  });
 
 
 
@@ -68,14 +69,14 @@ mockbills = new RealBills({
       const currentYear = new Date().getFullYear(); // get current date
       const century = year > currentYear % 100 ? '19' : '20'; //divide by 100 to get current year in two digit format
       return `${century}${year}-${paddedMonth}-${day}`; //if date year is greater than current year, set first two digits of year to 19, else to 20
-        }
+    }
 
     test("Then bills should be ordered from earliest to latest", () => {
-      let dates = Array.from(document.querySelectorAll(".date")).map(el => el.innerHTML);   
-         console.log(dates)
-      
-       dates = dates.map(convertDateFormat);
-       console.log(dates)
+      let dates = Array.from(document.querySelectorAll(".date")).map(el => el.innerHTML);
+      console.log(dates)
+
+      dates = dates.map(convertDateFormat);
+      console.log(dates)
 
       // document.body.innerHTML = BillsUI({ data: bills })
       // const dateRegex = /\b\d{2} [A-Z][a-z]{2}\. \d{2}\b/;
@@ -94,24 +95,24 @@ mockbills = new RealBills({
         store: localmockStore,
         localStorage: localStorage
       });
-    
+
       // Mock the handleClickNewBill method
       realbills.handleClickNewBill = jest.spyOn(realbills, 'handleClickNewBill');
-    
+
       // Simulate a click on the newBills button
       realbills.handleClickNewBill();
-    
+
       // Check that handleClickNewBill was called
       expect(realbills.handleClickNewBill).toHaveBeenCalled();
-      
-      const newBIllForm=dom.screen.getByTestId('form-new-bill')
+
+      const newBIllForm = dom.screen.getByTestId('form-new-bill')
       expect(newBIllForm).toBeInTheDocument()
 
-      realbills=null;
+      realbills = null;
 
     });
 
-    test("Clicking on eye icon opens up modal with bill in it", ()=>{
+    test("Clicking on eye icon opens up modal with bill in it", () => {
 
       realbills = new RealBills({
         document: document,
@@ -121,64 +122,110 @@ mockbills = new RealBills({
       });
 
       // Create a mock function for handleClickIconEye
-const mockHandleClickIconEye = jest.fn();
+      const mockHandleClickIconEye = jest.fn();
 
-// Mock jQuery's modal function
-$.fn.modal = jest.fn();
-      
+      // Mock jQuery's modal function
+      $.fn.modal = jest.fn();
+
       const eye = document.querySelector("[data-billid='47qAXb6fIm2zOKkLzMro']");
 
-      
+
 
       eye.addEventListener('click', realbills.handleClickIconEye(eye))
-      
+
       dom.fireEvent.click(eye)
 
-   
-        // Check that the modal function was called
-  expect($.fn.modal).toHaveBeenCalledWith('show');
+
+      // Check that the modal function was called
+      expect($.fn.modal).toHaveBeenCalledWith('show');
 
       // const modale = dom.screen.getByTestId('modal-dialog')
       // expect(modale).toBeTruthy()
 
     })
 
+    test('getBills calls store methods and returns formatted bills', async () => {
+
+    
+      // Arrange, create mock data to mock successfull get retrieval from store
+      const mockBills = [
+        { date: '2022-01-01', status: 'pending' },
+        { date: '2022-02-01', status: 'accepted' },
+        
+      ];
+      const mockStore = {
+        bills: jest.fn().mockReturnThis(),
+        list: jest.fn().mockResolvedValue(mockBills),
+      };
+      
+
+      realbills= new RealBills({
+        document:document,
+        onNavigate:onNavigate,
+        store:mockStore,
+        localStorage:localStorage
+        
+      })
+    
+      // 
+      const bills = await realbills.getBills();
+    
+      // Assert
+      expect(mockStore.bills).toHaveBeenCalled();
+      expect(mockStore.list).toHaveBeenCalled();
+      expect(bills).toHaveLength(mockBills.length);
+      for (let i = 0; i < mockBills.length; i++) {
+        expect(bills[i]).toEqual({
+          ...mockBills[i],
+          originaldate: mockBills[i].date,
+          date: formatDate(mockBills[i].date),
+          status: formatStatus(mockBills[i].status),
+        });
+      }
+    });
 
   })
 
 
-    // describe("When I navigate to Bill page", () => {
-    //   document.body.innerHTML = BillsUI({ data: bills }) //when on Bills page, body always needs to be rendered with billsUI
 
-    //   test("fetches bills from mock API GET", async () => {
-    //     Object.defineProperty(window, 'localStorage', { value: localStorageMock })
-    //     window.localStorage.setItem('user', JSON.stringify({
-    //       type: 'Employee'
-    //     }))
-    //     const root = document.createElement("div")
-    //     root.setAttribute("id", "root")
-    //     document.body.append(root)
-    //     router()
-    //     window.onNavigate(ROUTES_PATH.Bills)
-    //     await dom.waitFor(() => dom.screen.getByText("Mes notes de frais"))
-    //     const contentType  = await dom.screen.getByText("Type")
-    //     // expect(contentType).toBeTruthy()
-        // const contentNom  = dom.screen.getByText("Nom")
-        // expect(contentNom).toBeTruthy()
-        // const contentDate = dom.screen.getByText("Date")
-        // expect(contentDate).toBeTruthy()
-        // const contentMontant = dom.screen.getByText("Montant")
-        // expect(contentMontant).toBeTruthy()
-        // const contentStatut = dom.screen.getByText("Statut")
-        // expect(contentStatut).toBeTruthy()
-        // const contentActions = dom.screen.getByText("Actions")
-        // expect(contentActions).toBeTruthy()
-      
-        // expect(dom.screen.getByTestId("btn-new-bill")).toBeInTheDocument()
-        // expect(dom.screen.getByTestId("icon-window")).toBeInTheDocument()
-        // expect(dom.screen.getByTestId("icon-mail")).toBeInTheDocument()
-      // })
 
+})
+
+
+// test d'intégration GET
+describe("Given I am a user connected as Employee", () => {
+  describe("When I navigate to Bills page", () => {
+    test("fetches bills from mock API GET", async () => {
+      localStorage.setItem("user", JSON.stringify({ type: "Employee", email: "a@a" }));
+      const root = document.createElement("div")
+      root.setAttribute("id", "root")
+      document.body.append(root)
+      router()
+      window.onNavigate(ROUTES_PATH.Bills)
+      await dom.waitFor(() => dom.screen.getByText("Mes notes de frais"))
+      await dom.waitFor(() => document.getElementById("data-table"))
+      const contentPending = await dom.screen.getByText("Type")
+      expect(contentPending).toBeTruthy()
+      const contentRefused = await dom.screen.getByText("Nom")
+      expect(contentRefused).toBeTruthy()
+      const contentActions = await dom.screen.getByText("Actions")
+      expect(contentActions).toBeTruthy()
+      const contentDate = await dom.screen.getByText("Date")
+      expect(contentDate).toBeTruthy()
+      const contentMontant = await dom.screen.getByText("Montant")
+      expect(contentMontant).toBeTruthy()
+      const contentStatut = await dom.screen.getByText("Statut")
+      expect(contentStatut).toBeTruthy()
+      await dom.waitFor(() => dom.screen.getByTestId('icon-window'))
+      expect(dom.screen.getByTestId("icon-window")).toBeTruthy()
+      await dom.waitFor(() => dom.screen.getByTestId('icon-mail'))
+      expect(dom.screen.getByTestId("icon-mail")).toBeTruthy()
+
+      const table = document.querySelector('#example')
+      const rows = dom.within(table).queryAllByRole('row');
+      expect(rows.length).not.toBe(0)
+
+    })
     // describe("When an error occurs on API", () => {
     //   beforeEach(() => {
     //     jest.spyOn(mockStore, "bills")
@@ -197,7 +244,7 @@ $.fn.modal = jest.fn();
     //     router()
     //   })
     //   test("fetches bills from an API and fails with 404 message error", async () => {
-  
+
     //     mockStore.bills.mockImplementationOnce(() => {
     //       return {
     //         list : () =>  {
@@ -209,113 +256,22 @@ $.fn.modal = jest.fn();
     //     const message = await dom.screen.getByText(/Erreur 404/)
     //     expect(message).toBeTruthy()
     //   })
-  
+
     //   test("fetches messages from an API and fails with 500 message error", async () => {
-  
+
     //     mockStore.bills.mockImplementationOnce(() => {
     //       return {
     //         list : () =>  {
     //           return Promise.reject(new Error("Erreur 500"))
     //         }
     //       }})
-  
+
     //     window.onNavigate(ROUTES_PATH.Dashboard)
     //     await new Promise(process.nextTick);
     //     const message = await dom.screen.getByText(/Erreur 500/)
     //     expect(message).toBeTruthy()
     //   })
     // })
-  
-
-  
-
-
-
-    // })
-
-  })
-
-
-  // test d'intégration GET
-describe("Given I am a user connected as Employee", () => {
-  describe("When I navigate to Bills page", () => {
-    test("fetches bills from mock API GET", async () => {
-      localStorage.setItem("user", JSON.stringify({ type: "Employee", email: "a@a" }));
-      const root = document.createElement("div")
-      root.setAttribute("id", "root")
-      document.body.append(root)
-      router()
-      window.onNavigate(ROUTES_PATH.Bills)
-      await dom.waitFor(() => dom.screen.getByText("Mes notes de frais"))
-      await dom.waitFor(()=> document.getElementById("data-table"))
-      const contentPending  = await dom.screen.getByText("Type")
-      expect(contentPending).toBeTruthy()
-      const contentRefused  = await dom.screen.getByText("Nom")
-      expect(contentRefused).toBeTruthy()
-      const contentActions= await dom.screen.getByText("Actions")
-      expect(contentActions).toBeTruthy()
-      const contentDate = await dom.screen.getByText("Date")
-      expect(contentDate).toBeTruthy()
-      const contentMontant = await dom.screen.getByText("Montant")
-      expect(contentMontant).toBeTruthy()
-      const contentStatut = await dom.screen.getByText("Statut")
-      expect(contentStatut).toBeTruthy()
-      await dom.waitFor(() => dom.screen.getByTestId('icon-window'))
-      expect(dom.screen.getByTestId("icon-window")).toBeTruthy()
-      await dom.waitFor(() => dom.screen.getByTestId('icon-mail'))
-      expect(dom.screen.getByTestId("icon-mail")).toBeTruthy()
-
-      const table=document.querySelector('#example')
-      const rows=dom.within(table).queryAllByRole('row');
-      expect(rows.length).not.toBe(0)
-
-    })
-  // describe("When an error occurs on API", () => {
-  //   beforeEach(() => {
-  //     jest.spyOn(mockStore, "bills")
-  //     Object.defineProperty(
-  //         window,
-  //         'localStorage',
-  //         { value: localStorageMock }
-  //     )
-  //     window.localStorage.setItem('user', JSON.stringify({
-  //       type: 'Admin',
-  //       email: "a@a"
-  //     }))
-  //     const root = document.createElement("div")
-  //     root.setAttribute("id", "root")
-  //     document.body.appendChild(root)
-  //     router()
-  //   })
-  //   test("fetches bills from an API and fails with 404 message error", async () => {
-
-  //     mockStore.bills.mockImplementationOnce(() => {
-  //       return {
-  //         list : () =>  {
-  //           return Promise.reject(new Error("Erreur 404"))
-  //         }
-  //       }})
-  //     window.onNavigate(ROUTES_PATH.Dashboard)
-  //     await new Promise(process.nextTick);
-  //     const message = await dom.screen.getByText(/Erreur 404/)
-  //     expect(message).toBeTruthy()
-  //   })
-
-  //   test("fetches messages from an API and fails with 500 message error", async () => {
-
-  //     mockStore.bills.mockImplementationOnce(() => {
-  //       return {
-  //         list : () =>  {
-  //           return Promise.reject(new Error("Erreur 500"))
-  //         }
-  //       }})
-
-  //     window.onNavigate(ROUTES_PATH.Dashboard)
-  //     await new Promise(process.nextTick);
-  //     const message = await dom.screen.getByText(/Erreur 500/)
-  //     expect(message).toBeTruthy()
-  //   })
-  // })
 
   })
 })

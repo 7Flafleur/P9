@@ -27,19 +27,15 @@ export default class {
     $('#modaleFile').modal('show')
   }
 
-  // modify this function to sort bills by date!
   getBills = () => {
-    if (this.store) {
+    if (this.store) {              
       return this.store
       .bills()
       .list()
-      .then(snapshot => {
+      .then(snapshot => {           // 
         let bills = snapshot
           .map(doc => {
             try {
-          
-
-
               return {
                 ...doc,
                 originaldate:doc.date,  //date en format yyyy-mm-dd
@@ -57,10 +53,6 @@ export default class {
               }
             }
           })
-
-    
-        
-       
 
         return bills;
       })
