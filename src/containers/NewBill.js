@@ -20,23 +20,27 @@ export default class NewBill {
   handleChangeFile = e => {
     e.preventDefault()
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
-    console.log("File:", file)
-    console.log("Target value",e.target.value)
+    // console.log("File:", file)
+    // console.log("Target value",e.target.value)
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
 
     
 
-checkFileExtension(fileName)
+ if (!checkFileExtension(fileName)){
+  alert("Invalid file extension")
+  return;
+ }
 
     const formData = new FormData()
     const email = JSON.parse(localStorage.getItem("user")).email
     formData.append('file', file)
     formData.append('email', email)
 
+    // interaction with store happens here!! 
     this.store
-      .bills()
-      .create({
+      .bills()   // creates new ApiEntity to use its methods               
+      .create({      //use create method to POST object with data and header
         data: formData,
         headers: {
           noContentType: true
@@ -111,14 +115,14 @@ checkFileExtension(fileName)
 
 
 
-function checkFileExtension(fileName){
+export function checkFileExtension(fileName){
   
       // Get the file extension
       const fileExtension = fileName.split('.').pop()
 
       // Check the file extension
       if (fileExtension !== 'jpg' && fileExtension !== 'png' && fileExtension !== 'jpeg') {
-        // console.error('Invalid file extension')
+         console.error('Invalid file extension')
         // alert("invalid file extention")
         return false;
       }
