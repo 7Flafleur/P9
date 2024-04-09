@@ -4,7 +4,8 @@ import pctIcon from '../assets/svg/pct.js'
 import eyeWhite from '../assets/svg/eye_white.js'
 import { formatDate } from '../app/format.js'
 
-export const modal = (bill) => (`
+//change modal to expect parameter
+export const modal = (bill) => (`     
   <div class="modal fade" id="modaleFileAdmin1" data-testid="modaleFileAdmin" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
       <div class="modal-content">
@@ -66,7 +67,7 @@ export default (bill) => {
       </div>
       <div class="row">
         <div class="col-sm">
-          <label for="file" class="bold-label">Justificatif</label>
+          <label for="file" class="bold-label">${bill.name}</label>
             <div class='input-field input-flex file-flex'>
             <span id="file-name-admin">${bill.fileName}</span>
             <div class='icons-container'>
