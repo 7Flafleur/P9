@@ -48,6 +48,24 @@ export default ({ data: bills=[], loading, error }) => {
           })
 
 
+          //////////////////////////display for former test//////////
+
+
+          // bills.forEach((bill)=>{
+          //   //  console.log("original date bills ui"
+          //   //  ,bill.originaldate)
+  
+          //    bill.date = convertDateFormat(bill.date)      //
+       
+          //   })
+          //   bills=bills.sort(compareBillDatesDesc1)
+          //   // bills.forEach((bill)=>{
+          //   //   bill.date=formatDate(bill.date)
+          //   // })
+  
+  
+
+          ////////////
           
 
   const modal = () => (`
