@@ -8,7 +8,7 @@ import BillsUI from "../views/BillsUI.js"
 import { bills } from "../fixtures/bills.js"
 import { ROUTES_PATH } from "../constants/routes.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
-import { localmockStore } from '../__mocks__/store.js'
+// import { localmockStore } from '../__mocks__/store.js'
 import mockStore from "../__mocks__/store"       //import mock data
 import RealBills from "../containers/Bills.js"
 import { formatDate,formatStatus } from '../app/format.js';
@@ -30,7 +30,7 @@ describe("Given I am connected as an employee", () => {
     querySelectorAll: jest.fn().mockReturnValue([{ addEventListener: jest.fn() }])
   };
   const mockOnNavigate = jest.fn();
-  const mockStore = localmockStore;
+  
   const mockLocalStorage = localStorageMock;
 
 
@@ -98,7 +98,7 @@ describe("Given I am connected as an employee", () => {
       realbills = new RealBills({
         document: document,
         onNavigate: onNavigate,
-        store: localmockStore,
+        store: mockStore,
         localStorage: localStorage
       });
 
@@ -123,12 +123,11 @@ describe("Given I am connected as an employee", () => {
       realbills = new RealBills({
         document: document,
         onNavigate: onNavigate,
-        store: localmockStore,
+        store: mockStore,
         localStorage: localStorage
       });
 
-      // Create a mock function for handleClickIconEye
-      const mockHandleClickIconEye = jest.fn();
+     console.log(mockStore)
 
       // Mock jQuery's modal function
       $.fn.modal = jest.fn();
@@ -206,7 +205,7 @@ describe("Given I am a user connected as Employee", () => {
   // Mock data
 
   const mockOnNavigate = jest.fn();
-  const mockStore = localmockStore;
+  
   const mockLocalStorage = localStorageMock;
 
 
@@ -219,9 +218,57 @@ describe("Given I am a user connected as Employee", () => {
     localStorage: mockLocalStorage
   });
 
+ //number of bills in store 
+
+
+
+
+
+
+
+
+  
 
   describe("When I navigate to Bills page", () => {
 
+    test("fetches bills from mock API GET", async ()=>{
+      
+      Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+      window.localStorage.setItem('user', JSON.stringify({
+        type: 'Employee'
+      }))
+      const root = document.createElement("div")
+      root.setAttribute("id", "root")
+      document.body.append(root)
+      router()
+      window.onNavigate(ROUTES_PATH.Bills)
+
+      const BillsList=await mockStore.bills().list();
+      const numberOfBills=BillsList.length;
+    
+
+      //check if headers are correctly importe
+await dom.waitFor(()=>{      const tableHeaders=dom.screen.getAllByRole('columnheader');
+const expectedTerms=['Type','Nom','Date','Montant', 'Statut','Actions']
+
+expectedTerms.forEach(expectedTerm => {
+  const headerWithTerm = tableHeaders.find(header => header.textContent.includes(expectedTerm));
+  expect(headerWithTerm).toBeDefined();
+});
+
+})
+
+  //wait for correct number of bills to be retrieved
+
+      
+        const tableRows= dom.screen.getAllByRole('row')
+        expect(tableRows.length).toBe(numberOfBills+1) //tableheaders count as rows
+    
+
+
+
+
+    })
 
 
 
