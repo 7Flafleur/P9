@@ -238,54 +238,7 @@ describe("Given I am connected as an employee", () => {
 
     }); // end test  handlesubmit correct
 
-//     test('should handle errors in handleChangeFile', async () => {
-      
-//       jest.spyOn(mockStore, "bills")
-//       Object.defineProperty(
-//           window,
-//           'localStorage',
-//           { value: localStorageMock }
-//       )
-//       window.localStorage.setItem('user', JSON.stringify({
-//         type: 'Employee',
-//         email: "e@e"
-//       }))
-//       const root = document.createElement("div")
-//       root.setAttribute("id", "root")
-//       document.body.appendChild(root)
-//       router()
     
-
-//     const onNavigate=jest.fn()
-
-
-//       const newerrorBill = new NewBill({
-//         document:document,
-//         onNavigate:onNavigate,
-//         store:mockStore,
-//         localStorage:localStorage,
-//       })
-
-
-//       mockStore.bills().create.mockImplementationOnce(() => Promise.reject(new Error("Erreur 404")));
-
-//         jest.spyOn(console, 'error').mockImplementation(() => {});
-
-        
-//   // Trigger the handleChangeFile method
-//   const event = {
-//     preventDefault: jest.fn(),
-//     target: {
-//       value: 'C:\\fakepath\test.jpg',
-//     },
-//   };
-  
-//  newerrorBill.handleChangeFile(event);  
-
-//   // Check that console.error was called with the correct error
-//   expect(console.error).toHaveBeenCalledWith(new Error('Test error'));
-
-//     });
 
   }); // end second describe block
 
@@ -337,6 +290,8 @@ describe("Given I am connected as an employee", () => {
     });
 
     it('should handle errors in POST request', async () => {
+
+      jest.mock("../app/store", () => mockStore)  //mock original 
       // Mock fetch to reject with an error
       fetch.mockReject(new Error('Erreur 400'));
     
@@ -348,6 +303,15 @@ describe("Given I am connected as an employee", () => {
         expect(error).toEqual(new Error('Erreur 400'));
       }
     });
+
+///////
+
+
+
+
+
+
+//////////
 
   });//end integration test describe
 
