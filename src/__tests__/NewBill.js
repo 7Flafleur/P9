@@ -26,13 +26,16 @@ describe("Given I am connected as an employee", () => {
     let spy2;
 
     test("checkFileExtension returns false when handed file other than jpeg, jpg or png format",async () => {
-      
+      window.alert = jest.fn();
+
    
+      checkFileExtension('test.txt')
+expect(window.alert).not.toHaveBeenCalled();
 
 
       expect(checkFileExtension('test.txt')).toBe(false)
 
- 
+ window.alert.mockRestore();
     }); //end checkfileextension
 
     test("handleChangeFile stops when file extension other than png, jpg or jpeg is used", () => {
