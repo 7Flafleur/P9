@@ -12,6 +12,9 @@ import NewBillUI from "../views/NewBillUI.js"
 import NewBill from "../containers/NewBill.js"
 import { localmockStore } from "../__mocks__/store.js"
 import { ROUTES_PATH } from "../constants/routes.js";
+import Store from '../app/Store.js';
+import fetchMock from 'jest-fetch-mock';
+
 
 describe("Given I am connected as an employee", () => {
   //set connection to employee
@@ -229,10 +232,59 @@ window.alert.mockRestore();
 
     }); // end test  handlesubmit
 
+    
+
 
 
 
   }); // end second describe block
+
+  //integration test with actual create function 
+fetchMock.enableMocks();
+
+describe('Store create function posts data correctly', () => {
+
+
+
+
+  test('should make a POST request with correct URL and body', async () => {
+   console.log("Store",Store)
+   const mockData = {
+    email: 'test@example.com',
+    type: 'type',
+    name: 'name',
+    amount: 100,
+    date: '2022-01-01',
+    vat: '20',
+    pct: 10,
+    commentary: 'commentary',
+    fileUrl: 'http://example.com/file.jpg',
+    fileName: 'file.jpg',
+    status: 'pending',
+  };
+   
+    const expectedResponse = { result: 'success' };
+
+    fetch.mockResponseOnce(JSON.stringify(expectedResponse));
+
+    const response = await Store.bills().create({data: JSON.stringify(mockData)});
+
+
+
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledWith('http://localhost:5678/bills', {
+      method: 'POST',
+      body: JSON.stringify(mockData),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer {\"email\":\"test@example.com\"}",
+      },
+    });
+
+    expect(response).toEqual(expectedResponse);
+  });
+});
+
 }); // end first describe block
 
 

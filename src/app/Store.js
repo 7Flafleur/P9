@@ -12,7 +12,7 @@ class Api {                 //defines methods for making http requests
     return jsonOrThrowIfError(await fetch(`${this.baseUrl}${url}`, {headers, method: 'GET'}))
   }
   async post({url, data, headers}) {
-    return jsonOrThrowIfError(await fetch(`${this.baseUrl}${url}`, {headers, method: 'POST', body: data}))
+    return jsonOrThrowIfError(await fetch(`${this.baseUrl}${url}`, {headers, method: 'POST', body: data}))   // expects body to be JSON
   }
   async delete({url, headers}) {
     return jsonOrThrowIfError(await fetch(`${this.baseUrl}${url}`, {headers, method: 'DELETE'}))
@@ -67,10 +67,10 @@ class Store {
   users = () => new ApiEntity({key: 'users', api: this.api})   //users(): Returns all users from the API.
   login = (data) => this.api.post({url: '/auth/login', data, headers: getHeaders({noAuthorization: true})}) //login(data): Sends a login request to the API.
 
-  ref = (path) => this.store.doc(path) //ref(path): This method seems incomplete as this.store is not defined anywhere in the class.
+  ref = (path) => this.store.doc(path) // ?
 
   bill = bid => (new ApiEntity({key: 'bills', api: this.api})).select({selector: bid})  //bill(bid): Returns a specific bill from the API.
   bills = () => new ApiEntity({key: 'bills', api: this.api}) //bills(): Returns all bills from the API.
 }
 
-export default new Store()
+export default new Store()   //Object, not classs!! no instatiation possible

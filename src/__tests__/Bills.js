@@ -264,7 +264,7 @@ describe("Given I am a user connected as Employee", () => {
       const numberOfBills=BillsList.length;
     
 
-      //check if headers are correctly importe
+      //check if headers are correctly imported
 await dom.waitFor(()=>{      const tableHeaders=dom.screen.getAllByRole('columnheader');
 const expectedTerms=['Type','Nom','Date','Montant', 'Statut','Actions']
 
@@ -284,7 +284,69 @@ expectedTerms.forEach(expectedTerm => {
     })
 
 
+    describe("When an API error occurs", ()=>{
+      beforeEach(() => {
+        jest.spyOn(mockStore, "bills")
+        Object.defineProperty(
+            window,
+            'localStorage',
+            { value: localStorageMock }
+        )
+        window.localStorage.setItem('user', JSON.stringify({
+          type: 'Employee',
+          email: "employee@test.tld"
+        }))
+        const root = document.createElement("div")
+        root.setAttribute("id", "root")
+        document.body.appendChild(root)
+        router()
+      })
+
+      test("tries to fetch bills, fails with 404 error",async ()=>{
+
+//mock bills method used for GET requests
+        mockStore.bills.mockImplementationOnce(() => {
+          return {
+            list : () =>  {                  //mock rejection of promise                      
+              return Promise.reject(new Error("Erreur 404"))
+            }
+          }})
+        window.onNavigate(ROUTES_PATH.Bills)
+        await new Promise(process.nextTick);
+        const message = await dom.screen.getByText(/Erreur 404/)
+        expect(message).toBeTruthy()
+      } )
+
+      test("tries to fetch bills, returns error 500", async ()=>{
+
+        //mock bills method used for GET requests
+        mockStore.bills.mockImplementationOnce(() => {
+          return {
+            list : () =>  {                  //mock rejection of promise                      
+              return Promise.reject(new Error("Erreur 500"))
+            }
+          }})
+        window.onNavigate(ROUTES_PATH.Bills)
+        await new Promise(process.nextTick);
+        const message = await dom.screen.getByText(/Erreur 500/)
+        expect(message).toBeTruthy()
+        
+      })
+
+
+
+    })
 
 
   })
 })
+
+
+
+//Bills method looks like this: 
+
+// const bills = store.bills(); returns mockedBills
+// mockedBills.list();
+// mockedBills.create(bill);
+// mockedBills.update(bill);
+

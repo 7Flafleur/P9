@@ -1,5 +1,5 @@
 const mockedBills = {
-  list() {
+  list() {  //GET
     return Promise.resolve([{
       "id": "47qAXb6fIm2zOKkLzMro",
       "vat": "80",
@@ -62,10 +62,10 @@ const mockedBills = {
       }])
 
   },
-  create(bill) {
+  create(bill) { ////////POST 
     return Promise.resolve({fileUrl: 'https://localhost:3456/images/test.jpg', key: '1234'})
   },
-  update(bill) {
+  update(bill) { ///POST
     return Promise.resolve({
       "id": "47qAXb6fIm2zOKkLzMro",
       "vat": "80",

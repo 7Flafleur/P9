@@ -282,7 +282,7 @@ describe("Given I am a user connected as Admin", () => {
 
       mockStore.bills.mockImplementationOnce(() => {
         return {
-          list : () =>  {
+          list : () =>  {                                       
             return Promise.reject(new Error("Erreur 404"))
           }
         }})
