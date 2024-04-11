@@ -129,17 +129,23 @@ newBillmocked = null;
             }
 
             const headers= {noContentType:true}
+
+            //mock alert
+
+            window.alert = jest.fn();
 /////
 
 await newBillmocked.handleChangeFile(mockeventvalidfile)
 
-// expect(spy2).toHaveBeenCalledWith(global.FormData,headers);
 
-
+// Check if create() was called with mock FormData and headers
+expect(spy2).toHaveBeenCalledWith({ data: expect.any(Object), headers: headers });
+expect(window.alert).not.toHaveBeenCalled();
 
 // Clean up
 spy2.mockRestore();
 newBillmocked=null;
+window.alert.mockRestore();
 
 
     } ) //end correct submit

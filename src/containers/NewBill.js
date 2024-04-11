@@ -31,7 +31,8 @@ export default class NewBill {
   alert("Invalid file extension")
   return;
  }
-
+ else{
+  
     const formData = new FormData()
     const email = JSON.parse(localStorage.getItem("user")).email
     formData.append('file', file)
@@ -47,12 +48,12 @@ export default class NewBill {
         }
       })
       .then(({fileUrl, key}) => {
-        console.log(fileUrl)
+        // console.log(formData)
         this.billId = key
         this.fileUrl = fileUrl
         this.fileName = fileName
       }).catch(error => console.error(error))
-  }
+  }}
 
   
 
@@ -60,7 +61,7 @@ export default class NewBill {
 
   handleSubmit = e => {
     e.preventDefault()
-    console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
+    // console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
     const email = JSON.parse(localStorage.getItem("user")).email
     const bill = {
       email,
@@ -114,7 +115,6 @@ export default class NewBill {
 
 
 
-
 export function checkFileExtension(fileName){
   
       // Get the file extension
@@ -122,9 +122,11 @@ export function checkFileExtension(fileName){
 
       // Check the file extension
       if (fileExtension !== 'jpg' && fileExtension !== 'png' && fileExtension !== 'jpeg') {
-         console.error('Invalid file extension')
+        //  console.error('Invalid file extension')
         // alert("invalid file extention")
         return false;
       }
+      else
+      {return true;}
     
 }
