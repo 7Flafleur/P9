@@ -7,13 +7,21 @@ import * as dom from "@testing-library/dom"
 // import mockEvent from '../__mocks__/single_store.js'
 
 import { checkFileExtension } from '../containers/NewBill.js'
-
+import mockStore from "../__mocks__/store"   
 import NewBillUI from "../views/NewBillUI.js"
 import NewBill from "../containers/NewBill.js"
 import { localmockStore } from "../__mocks__/store.js"
 import { ROUTES_PATH } from "../constants/routes.js";
 import Store from '../app/Store.js';
 import fetchMock from 'jest-fetch-mock';
+import { localStorageMock } from "../__mocks__/localStorage.js";
+
+
+
+import router from "../app/Router.js";
+
+
+
 
 
 describe("Given I am connected as an employee", () => {
@@ -21,6 +29,7 @@ describe("Given I am connected as an employee", () => {
   window.localStorage.setItem('user', JSON.stringify({
     type: 'Employee', email: 'test@test.fr'
   }));
+})
 
   describe("When I am on NewBill Page", () => {
     document.body.innerHTML = NewBillUI()   //html is created by NewBillUI
@@ -91,7 +100,7 @@ describe("Given I am connected as an employee", () => {
 
     }); //end handlechangefile
 
-    test("handlechangeFile submits uploaded file correctly ", async () => {
+    test("handleChangeFile submits uploaded file correctly ", async () => {
 
       //instance
 
@@ -154,10 +163,7 @@ describe("Given I am connected as an employee", () => {
       window.alert.mockRestore();
 
 
-    }) //end correct submit
-
-
-
+    }) //end correct changeFile
 
 
     test("handleSubmit calls function to submit new bill with inputted data", () => {
@@ -230,15 +236,65 @@ describe("Given I am connected as an employee", () => {
       // Check that onNavigate was called with the correct path
       expect(mockOnNavigate).toHaveBeenCalledWith(ROUTES_PATH['Bills']);
 
-    }); // end test  handlesubmit
+    }); // end test  handlesubmit correct
 
+//     test('should handle errors in handleChangeFile', async () => {
+      
+//       jest.spyOn(mockStore, "bills")
+//       Object.defineProperty(
+//           window,
+//           'localStorage',
+//           { value: localStorageMock }
+//       )
+//       window.localStorage.setItem('user', JSON.stringify({
+//         type: 'Employee',
+//         email: "e@e"
+//       }))
+//       const root = document.createElement("div")
+//       root.setAttribute("id", "root")
+//       document.body.appendChild(root)
+//       router()
+    
+
+//     const onNavigate=jest.fn()
+
+
+//       const newerrorBill = new NewBill({
+//         document:document,
+//         onNavigate:onNavigate,
+//         store:mockStore,
+//         localStorage:localStorage,
+//       })
+
+
+//       mockStore.bills().create.mockImplementationOnce(() => Promise.reject(new Error("Erreur 404")));
+
+//         jest.spyOn(console, 'error').mockImplementation(() => {});
+
+        
+//   // Trigger the handleChangeFile method
+//   const event = {
+//     preventDefault: jest.fn(),
+//     target: {
+//       value: 'C:\\fakepath\test.jpg',
+//     },
+//   };
+  
+//  newerrorBill.handleChangeFile(event);  
+
+//   // Check that console.error was called with the correct error
+//   expect(console.error).toHaveBeenCalledWith(new Error('Test error'));
+
+//     });
 
   }); // end second describe block
 
+//////////////////////////////////////////
   //integration test with actual create function 
-  fetchMock.enableMocks();
+ 
 
   describe('Store create function handles POST requests corectly', () => {
+    fetchMock.enableMocks();
     const mockData = {
       email: 'test@example.com',
       type: 'type',
@@ -296,7 +352,7 @@ describe("Given I am connected as an employee", () => {
   });//end integration test describe
 
 
-}); // end first describe block
+
 
 
 
@@ -332,7 +388,6 @@ describe("Given I am connected as an employee", () => {
 //   localStorage: window.localStorage,
 //   store: localmockStore, // use localmockStore here
 // })
-
 
 
 

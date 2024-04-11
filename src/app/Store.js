@@ -1,6 +1,7 @@
 
 const jsonOrThrowIfError = async (response) => {
-  if(!response.ok) throw new Error((await response.json()).message)  // if status within 200-299, return response body as JSON
+  if(!response.ok) throw new Error((await response.json()).message) 
+   // if status within 200-299, return response body as JSON
   return response.json()
 }
 
