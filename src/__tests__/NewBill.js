@@ -28,21 +28,21 @@ describe("Given I am connected as an employee", () => {
     let spy1;
     let spy2;
 
-    test("checkFileExtension returns false when handed file other than jpeg, jpg or png format",async () => {
+    test("checkFileExtension returns false when handed file other than jpeg, jpg or png format", async () => {
       window.alert = jest.fn();
 
-   
+
       checkFileExtension('test.txt')
-expect(window.alert).not.toHaveBeenCalled();
+      expect(window.alert).not.toHaveBeenCalled();
 
 
       expect(checkFileExtension('test.txt')).toBe(false)
 
- window.alert.mockRestore();
+      window.alert.mockRestore();
     }); //end checkfileextension
 
     test("handleChangeFile stops when file extension other than png, jpg or jpeg is used", () => {
-    
+
 
       //create instance
       newBillmocked = new NewBill({
@@ -65,96 +65,96 @@ expect(window.alert).not.toHaveBeenCalled();
         },
       });
 
-      spy1 = jest.spyOn(newBillmocked.store,'bills')
+      spy1 = jest.spyOn(newBillmocked.store, 'bills')
 
-      const mockeventinvalidfile= {
+      const mockeventinvalidfile = {
         preventDefault: jest.fn(),
-        target:{
-          value :'C:\fakepath\database_dev.sqlite'
+        target: {
+          value: 'C:\fakepath\database_dev.sqlite'
         }
 
       }
-//////////////////////////////////////end setup
+      //////////////////////////////////////end setup
 
-newBillmocked.handleChangeFile(mockeventinvalidfile);
+      newBillmocked.handleChangeFile(mockeventinvalidfile);
 
-expect(spy1).not.toHaveBeenCalled();
+      expect(spy1).not.toHaveBeenCalled();
 
-//////////////////// end test
+      //////////////////// end test
 
-spy1.mockRestore();
+      spy1.mockRestore();
 
-newBillmocked = null;
+      newBillmocked = null;
 
 
-//////cleanup 
+      //////cleanup 
 
     }); //end handlechangefile
 
-    test("handlechangeFile submits uploaded file correctly ",async ()=>{
+    test("handlechangeFile submits uploaded file correctly ", async () => {
 
       //instance
 
-            //create instance
-            newBillmocked = new NewBill({
-              document: {
-                querySelector: jest.fn().mockReturnValue({
-                  addEventListener: jest.fn(),
-                  files: ['mockFile'],
-                }),
-              },
-              onNavigate: jest.fn(),
-              store: {
-                bills: jest.fn().mockReturnValue({
-                  create: jest.fn().mockResolvedValue({ fileUrl: 'mockFileUrl', key: 'mockKey' }),
-                  update: jest.fn().mockResolvedValue({}),
-                }),
-              },
-              localStorage: {
-                getItem: jest.fn(),
-                setItem: jest.fn(),
-              },
-            });
-      
-            spy2 = jest.spyOn(newBillmocked.store.bills(),'create')
-      
+      //create instance
+      newBillmocked = new NewBill({
+        document: {
+          querySelector: jest.fn().mockReturnValue({
+            addEventListener: jest.fn(),
+            files: ['mockFile'],
+          }),
+        },
+        onNavigate: jest.fn(),
+        store: {
+          bills: jest.fn().mockReturnValue({
+            create: jest.fn().mockResolvedValue({ fileUrl: 'mockFileUrl', key: 'mockKey' }),
+            update: jest.fn().mockResolvedValue({}),
+          }),
+        },
+        localStorage: {
+          getItem: jest.fn(),
+          setItem: jest.fn(),
+        },
+      });
 
-            //mock formdata
-            global.FormData = jest.fn(() => ({
-              append: jest.fn(),
-            }));
-
-            //mock event
-
-            const mockeventvalidfile= {
-              preventDefault: jest.fn(),
-              target:{
-                value :'C:\\fakepath\test.jpg'
-              }
-      
-            }
-
-            const headers= {noContentType:true}
-
-            //mock alert
-
-            window.alert = jest.fn();
-/////
-
-await newBillmocked.handleChangeFile(mockeventvalidfile)
+      spy2 = jest.spyOn(newBillmocked.store.bills(), 'create')
 
 
-// Check if create() was called with mock FormData and headers
-expect(spy2).toHaveBeenCalledWith({ data: expect.any(Object), headers: headers });
-expect(window.alert).not.toHaveBeenCalled();
+      //mock formdata
+      global.FormData = jest.fn(() => ({
+        append: jest.fn(),
+      }));
 
-// Clean up
-spy2.mockRestore();
-newBillmocked=null;
-window.alert.mockRestore();
+      //mock event
+
+      const mockeventvalidfile = {
+        preventDefault: jest.fn(),
+        target: {
+          value: 'C:\\fakepath\test.jpg'
+        }
+
+      }
+
+      const headers = { noContentType: true }
+
+      //mock alert
+
+      window.alert = jest.fn();
+      /////
+
+      await newBillmocked.handleChangeFile(mockeventvalidfile)
 
 
-    } ) //end correct submit
+      // Check if create() was called with mock FormData and headers
+      expect(spy2).toHaveBeenCalledWith({ data: expect.any(Object), headers: headers });
+      expect(window.alert).not.toHaveBeenCalled();
+
+      // Clean up
+      spy2.mockRestore();
+      newBillmocked = null;
+      window.alert.mockRestore();
+
+
+    }) //end correct submit
 
 
 
@@ -232,58 +232,69 @@ window.alert.mockRestore();
 
     }); // end test  handlesubmit
 
-    
-
-
-
 
   }); // end second describe block
 
   //integration test with actual create function 
-fetchMock.enableMocks();
+  fetchMock.enableMocks();
 
-describe('Store create function posts data correctly', () => {
-
-
-
-
-  test('should make a POST request with correct URL and body', async () => {
-   console.log("Store",Store)
-   const mockData = {
-    email: 'test@example.com',
-    type: 'type',
-    name: 'name',
-    amount: 100,
-    date: '2022-01-01',
-    vat: '20',
-    pct: 10,
-    commentary: 'commentary',
-    fileUrl: 'http://example.com/file.jpg',
-    fileName: 'file.jpg',
-    status: 'pending',
-  };
-   
-    const expectedResponse = { result: 'success' };
-
-    fetch.mockResponseOnce(JSON.stringify(expectedResponse));
-
-    const response = await Store.bills().create({data: JSON.stringify(mockData)});
+  describe('Store create function handles POST requests corectly', () => {
+    const mockData = {
+      email: 'test@example.com',
+      type: 'type',
+      name: 'name',
+      amount: 100,
+      date: '2022-01-01',
+      vat: '20',
+      pct: 10,
+      commentary: 'commentary',
+      fileUrl: 'http://example.com/file.jpg',
+      fileName: 'file.jpg',
+      status: 'pending',
+    };
 
 
 
-    expect(fetch).toHaveBeenCalledTimes(1);
-    expect(fetch).toHaveBeenCalledWith('http://localhost:5678/bills', {
-      method: 'POST',
-      body: JSON.stringify(mockData),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': "Bearer {\"email\":\"test@example.com\"}",
-      },
+    test('should make a POST request with correct URL and body', async () => {
+      console.log("Store", Store)
+
+
+      const expectedResponse = { result: 'success' };
+
+      fetch.mockResponseOnce(JSON.stringify(expectedResponse));
+
+      const response = await Store.bills().create({ data: JSON.stringify(mockData) });
+
+
+
+      expect(fetch).toHaveBeenCalledTimes(1);
+      expect(fetch).toHaveBeenCalledWith('http://localhost:5678/bills', {
+        method: 'POST',
+        body: JSON.stringify(mockData),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': "Bearer {\"email\":\"test@example.com\"}",
+        },
+      });
+
+      expect(response).toEqual(expectedResponse);
     });
 
-    expect(response).toEqual(expectedResponse);
-  });
-});
+    it('should handle errors in POST request', async () => {
+      // Mock fetch to reject with an error
+      fetch.mockReject(new Error('Erreur 400'));
+    
+      try {
+        // Call the function that triggers the POST request
+        await Store.bills().create({data: mockData});
+      } catch (error) {
+        // Check that the error is handled correctly
+        expect(error).toEqual(new Error('Erreur 400'));
+      }
+    });
+
+  });//end integration test describe
+
 
 }); // end first describe block
 
