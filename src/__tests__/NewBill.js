@@ -25,9 +25,14 @@ describe("Given I am connected as an employee", () => {
     let spy1;
     let spy2;
 
-    test("checkFileExtension returns false when handed file other than jpeg, jpg or png format", () => {
+    test("checkFileExtension returns false when handed file other than jpeg, jpg or png format",async () => {
       
+   
+
+
       expect(checkFileExtension('test.txt')).toBe(false)
+
+ 
     }); //end checkfileextension
 
     test("handleChangeFile stops when file extension other than png, jpg or jpeg is used", () => {
@@ -80,10 +85,63 @@ newBillmocked = null;
 
     }); //end handlechangefile
 
-    test("handlechangeFile submits uploaded file correctly ",()=>{
+    test("handlechangeFile submits uploaded file correctly ",async ()=>{
 
+      //instance
 
+            //create instance
+            newBillmocked = new NewBill({
+              document: {
+                querySelector: jest.fn().mockReturnValue({
+                  addEventListener: jest.fn(),
+                  files: ['mockFile'],
+                }),
+              },
+              onNavigate: jest.fn(),
+              store: {
+                bills: jest.fn().mockReturnValue({
+                  create: jest.fn().mockResolvedValue({ fileUrl: 'mockFileUrl', key: 'mockKey' }),
+                  update: jest.fn().mockResolvedValue({}),
+                }),
+              },
+              localStorage: {
+                getItem: jest.fn(),
+                setItem: jest.fn(),
+              },
+            });
       
+            spy2 = jest.spyOn(newBillmocked.store.bills(),'create')
+      
+
+            //mock formdata
+            global.FormData = jest.fn(() => ({
+              append: jest.fn(),
+            }));
+
+            //mock event
+
+            const mockeventvalidfile= {
+              preventDefault: jest.fn(),
+              target:{
+                value :'C:\\fakepath\test.jpg'
+              }
+      
+            }
+
+            const headers= {noContentType:true}
+/////
+
+await newBillmocked.handleChangeFile(mockeventvalidfile)
+
+// expect(spy2).toHaveBeenCalledWith(global.FormData,headers);
+
+
+
+// Clean up
+spy2.mockRestore();
+newBillmocked=null;
+
+
     } ) //end correct submit
 
 
