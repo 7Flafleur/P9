@@ -233,7 +233,7 @@ describe("Given I am connected as an employee", () => {
 
   }); // end second describe block
 
-
+///fist part integration tests
   describe(' handles POST requests corectly', () => {
     fetchMock.enableMocks();
     const mockData = {
@@ -262,7 +262,7 @@ describe("Given I am connected as an employee", () => {
 
       const response = await Store.bills().create({ data: JSON.stringify(mockData) });
 
-
+      console.log("Post response",response)
 
       expect(fetch).toHaveBeenCalledTimes(1);
       expect(fetch).toHaveBeenCalledWith('http://localhost:5678/bills', {
@@ -279,7 +279,7 @@ describe("Given I am connected as an employee", () => {
 
     
 
-    // ...
+    // POST TESTS WITH NEW STORE
     
     test('should handle errors correctly when submitting a bill', async () => {
       // Create a spy on console.error
@@ -324,6 +324,8 @@ describe("Given I am connected as an employee", () => {
       consoleSpy.mockRestore();
     });
 
+
+
     test('should handle errors correctly when creating a bill', async () => {
       // Create a spy on console.error
       const consoleSpy = jest.spyOn(console, 'error');
@@ -363,15 +365,11 @@ await waitFor(() => {
 ///////
 
 
-
-
-
-
 //////////
 
   });//end integration test describe
 
-// test d'intégration POST
+// Integration tests with
 describe("Given I am a user connected as Employee", () => {
   describe("When I navigate to NewBills", () => {
   document.body.innerHTML = NewBillUI()   //html is created by NewBillUI
