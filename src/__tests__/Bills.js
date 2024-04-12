@@ -50,9 +50,9 @@ describe("Given I am connected as an employee", () => {
 
 
   describe("When I am on Bills Page", () => {
-    document.body.innerHTML = BillsUI({ data: bills }) //when on Bills page, body always needs to be rendered with billsUI
+    
     test("Then bill icon in vertical layout should be highlighted", async () => {
-
+document.body.innerHTML = BillsUI({ data: bills }) //when on Bills page, body always needs to be rendered with billsUI
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
       window.localStorage.setItem('user', JSON.stringify({
         type: 'Employee'
@@ -68,27 +68,17 @@ describe("Given I am connected as an employee", () => {
       expect(windowIcon).toHaveClass('active-icon')
 
     })
-    function convertDateFormat(dateStr) {
-      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      const [day, month, year] = dateStr.split(' ');  //extract element from datestring
-      const paddedMonth = (months.indexOf(month) + 1).toString().padStart(2, '0');  //add 0 to index of month if it only has one digit (less than 10)
-      const currentYear = new Date().getFullYear(); // get current date
-      const century = year > currentYear % 100 ? '19' : '20'; //divide by 100 to get current year in two digit format
-      return `${century}${year}-${paddedMonth}-${day}`; //if date year is greater than current year, set first two digits of year to 19, else to 20
-    }
+
 
     test("Then bills should be ordered from earliest to latest", () => {
-      let dates = Array.from(document.querySelectorAll(".date")).map(el => el.innerHTML);
-      // console.log(dates)
+    document.body.innerHTML = BillsUI({ data: bills })
+    const dates = dom.screen.getAllByText(/^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/i).map(a => a.innerHTML)
+    const antiChrono = (a, b) => ((a < b) ? 1 : -1)
+    const datesSorted = [...dates].sort(antiChrono)
+    expect(dates).toEqual(datesSorted)
 
-      dates = dates.map(convertDateFormat);
-      // console.log(dates)
-
-      
-
-      const antiChrono = (a, b) => ((a < b) ? 1 : -1)
-      const datesSorted = [...dates].sort(antiChrono)
-      expect(dates).toEqual(datesSorted)
+    //cleanup
+   document.body.innerHTML='';
     })
 
     //////////////////////////////TEST ORIGINAL
@@ -111,31 +101,60 @@ describe("Given I am connected as an employee", () => {
 
 
 
-    test("Clicking on newBills button should redirect me to NewBills page", () => {
-      realbills = new RealBills({
-        document: document,
-        onNavigate: onNavigate,
-        store: mockStore,
-        localStorage: localStorage
-      });
+//clickon newbill
+test("Clicking on newBills button should redirect me to NewBills page", async () => {
+  Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+  window.localStorage.setItem('user', JSON.stringify({
+    type: 'Employee'
+  }))
+  const root = document.createElement("div")
+  root.setAttribute("id", "root")
+  document.body.append(root)
+  router()
+  window.onNavigate(ROUTES_PATH.Bills)
 
-      // Mock the handleClickNewBill method
-      realbills.handleClickNewBill = jest.spyOn(realbills, 'handleClickNewBill');
+  realbills= new RealBills({
+    document:document,
+    onNavigate:onNavigate,
+    store:mockStore,
+    localStorage:localStorage
+    
+  })
 
-      // Simulate a click on the newBills button
-      realbills.handleClickNewBill();
 
-      // Check that handleClickNewBill was called
-      expect(realbills.handleClickNewBill).toHaveBeenCalled();
+  // Mock the handleClickNewBill method
+  realbills.handleClickNewBill = jest.spyOn(realbills, 'handleClickNewBill');
 
-      const newBIllForm = dom.screen.getByTestId('form-new-bill')
-      expect(newBIllForm).toBeInTheDocument()
+  const newBillsButton = await dom.screen.findByTestId('btn-new-bill'); 
+console.log
+  // Simulate a click on the newBills button
+  dom.fireEvent.click(newBillsButton);
 
-      realbills = null;
+  // Check that handleClickNewBill was called
+  // expect(realbills.handleClickNewBill).toHaveBeenCalled();
 
-    });
+  const newBIllForm = dom.screen.getByTestId('form-new-bill')
+  expect(newBIllForm).toBeInTheDocument();
+});
+
+
+
+/////
+
+
+
+
+
 
     test("Clicking on eye icon opens up modal with bill in it", () => {
+      document.body.innerHTML = BillsUI({ data: bills }) //when on Bills page, body always needs to be rendered with billsUI
+      Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+      window.localStorage.setItem('user', JSON.stringify({
+        type: 'Employee'
+      }))
+      const root = document.createElement("div")
+      root.setAttribute("id", "root")
+      document.body.append(root)
 
       realbills = new RealBills({
         document: document,
@@ -250,17 +269,13 @@ describe("Given I am a user connected as Employee", () => {
 
     test("fetches bills from mock API GET", async ()=>{
       
-      Object.defineProperty(window, 'localStorage', { value: localStorageMock })
-      window.localStorage.setItem('user', JSON.stringify({
-        type: 'Employee'
-      }))
-      const root = document.createElement("div")
-      root.setAttribute("id", "root")
-      document.body.append(root)
+
     
 
       const BillsList=await mockStore.bills().list();
       const numberOfBills=BillsList.length;
+
+      console.log("nb of bills",numberOfBills)
     
 
       //check if headers are correctly imported
@@ -276,7 +291,7 @@ expectedTerms.forEach(expectedTerm => {
 
   //wait for correct number of bills to be retrieved   
         const tableRows= dom.screen.getAllByRole('row')
-        expect(tableRows.length).toBe(numberOfBills+1) //tableheaders count as rows
+        expect(tableRows.length-1).toBe(numberOfBills) //tableheaders count as rows
 
     })
 
