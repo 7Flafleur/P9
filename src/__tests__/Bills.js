@@ -25,34 +25,28 @@ describe("Given I am connected as an employee", () => {
   let mockbills;
 
   // Mock data
-  const mockDocument = {
-    querySelector: jest.fn().mockReturnValue({ addEventListener: jest.fn() }),
-    querySelectorAll: jest.fn().mockReturnValue([{ addEventListener: jest.fn() }])
-  };
-  const mockOnNavigate = jest.fn();
+  // const mockDocument = {
+  //   querySelector: jest.fn().mockReturnValue({ addEventListener: jest.fn() }),
+  //   querySelectorAll: jest.fn().mockReturnValue([{ addEventListener: jest.fn() }])
+  // };
+  // const mockOnNavigate = jest.fn();
   
-  const mockLocalStorage = localStorageMock;
+  // const mockLocalStorage = localStorageMock;
 
 
   //mock instance
 
-  mockbills = new RealBills({
-    document: mockDocument,
-    onNavigate: mockOnNavigate,
-    store: mockStore,
-    localStorage: mockLocalStorage
-  });
 
 
-
+  
 
 
 
 
   describe("When I am on Bills Page", () => {
-    
+
     test("Then bill icon in vertical layout should be highlighted", async () => {
-document.body.innerHTML = BillsUI({ data: bills }) //when on Bills page, body always needs to be rendered with billsUI
+
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
       window.localStorage.setItem('user', JSON.stringify({
         type: 'Employee'
@@ -66,7 +60,6 @@ document.body.innerHTML = BillsUI({ data: bills }) //when on Bills page, body al
       const windowIcon = dom.screen.getByTestId('icon-window')
       //to-do write expect expression
       expect(windowIcon).toHaveClass('active-icon')
-
     })
 
 
@@ -225,6 +218,31 @@ console.log
       }
     });
 
+    test("getBills handles errors in formatDate", async () => {
+      jest.mock('../app/format.js', () => ({
+        formatDate: jest.fn(() => { throw new Error("formatDate error"); }),
+        formatStatus: jest.fn(() => 'status')
+      }));
+    
+      // Call the getBills method
+      const bills = await realbills.getBills();
+
+      console.log(formatDate())
+    
+      consoleSpy = jest.spyOn(console, 'log');
+
+      await dom.waitFor(() => {
+        expect(consoleSpy).toHaveBeenCalled();
+      });
+      
+
+  
+    });
+
+
+
+
+
   })
 
 
@@ -247,7 +265,7 @@ describe("Given I am a user connected as Employee", () => {
 
   //mock instance
 
-  mockbills = new RealBills({
+ const mockdbills = new RealBills({
     document: document,
     onNavigate: mockOnNavigate,
     store: mockStore,
