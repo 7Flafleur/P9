@@ -267,7 +267,7 @@ describe("Given I am connected as an employee", () => {
 
 
     test('should make a POST request with correct URL and body', async () => {
-      console.log("Store", Store)
+      // console.log("Store", Store)
 
 
       const expectedResponse = { result: 'success' };
@@ -295,7 +295,7 @@ describe("Given I am connected as an employee", () => {
 
     // ...
     
-    test('should handle errors correctly when creating a bill', async () => {
+    test('should handle errors correctly when submitting a bill', async () => {
       // Create a spy on console.error
       const consoleSpy = jest.spyOn(console, 'error');
     
@@ -333,6 +333,42 @@ describe("Given I am connected as an employee", () => {
       await waitFor(() => {
         expect(consoleSpy).toHaveBeenCalledWith(new Error('Erreur mock 500 update'));
       });
+    
+      // Clean up
+      consoleSpy.mockRestore();
+    });
+
+    test('should handle errors correctly when creating a bill', async () => {
+      // Create a spy on console.error
+      const consoleSpy = jest.spyOn(console, 'error');
+    
+      // Set up your other variables (like document, onNavigate, etc.)
+      // ...
+    
+      // Create a new instance of NewBill with the errorStore
+      const newerrorBill = new NewBill({
+        document, onNavigate:jest.fn(), store: mockErrorStore, localStorage: window.localStorage
+      });
+    
+     // Create a mock file
+const mockFile = new File([''], 'filename.txt', { type: 'text/plain' });
+
+const mockeventvalidfile = {
+  preventDefault: jest.fn(),
+  target: {
+    value: 'C:\\fakepath\test.jpg'
+  }
+
+}
+    
+    
+// Call handleChangeFile with the mock event
+newerrorBill.handleChangeFile(mockeventvalidfile);
+
+// Wait for console.error to be called
+await waitFor(() => {
+  expect(consoleSpy).toHaveBeenCalledWith(new Error('Mock error 500 create'));
+});
     
       // Clean up
       consoleSpy.mockRestore();
