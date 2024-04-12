@@ -6,8 +6,10 @@
 import * as dom from "@testing-library/dom"
 // import mockEvent from '../__mocks__/single_store.js'
 
+import {fireEvent, screen, waitFor} from "@testing-library/dom"
 import { checkFileExtension } from '../containers/NewBill.js'
 import mockStore from "../__mocks__/store"   
+import mockErrorStore from "../__mocks__/errorstore.js"
 import NewBillUI from "../views/NewBillUI.js"
 import NewBill from "../containers/NewBill.js"
 import { localmockStore } from "../__mocks__/store.js"
@@ -246,7 +248,7 @@ describe("Given I am connected as an employee", () => {
   //integration test with actual create function 
  
 
-  describe('Store create function handles POST requests corectly', () => {
+  describe(' handles POST requests corectly', () => {
     fetchMock.enableMocks();
     const mockData = {
       email: 'test@example.com',
@@ -289,19 +291,51 @@ describe("Given I am connected as an employee", () => {
       expect(response).toEqual(expectedResponse);
     });
 
-    it('should handle errors in POST request', async () => {
-
-      jest.mock("../app/store", () => mockStore)  //mock original 
-      // Mock fetch to reject with an error
-      fetch.mockReject(new Error('Erreur 400'));
     
-      try {
-        // Call the function that triggers the POST request
-        await Store.bills().create({data: mockData});
-      } catch (error) {
-        // Check that the error is handled correctly
-        expect(error).toEqual(new Error('Erreur 400'));
-      }
+
+    // ...
+    
+    test('should handle errors correctly when creating a bill', async () => {
+      // Create a spy on console.error
+      const consoleSpy = jest.spyOn(console, 'error');
+    
+      // Set up your other variables (like document, onNavigate, etc.)
+      // ...
+    
+      // Create a new instance of NewBill with the errorStore
+      const newerrorBill = new NewBill({
+        document, onNavigate:jest.fn(), store: mockErrorStore, localStorage: window.localStorage
+      });
+    
+      // Create a mock event object
+      const mockEvent = {
+        preventDefault: jest.fn(),
+        target: {
+          querySelector: jest.fn().mockImplementation((selector) => {
+            switch (selector) {
+              case 'select[data-testid="expense-type"]': return { value: 'type' };
+              case 'input[data-testid="expense-name"]': return { value: 'name' };
+              case 'input[data-testid="amount"]': return { value: '100' };
+              case 'input[data-testid="datepicker"]': return { value: '2022-01-01' };
+              case 'input[data-testid="vat"]': return { value: '20' };
+              case 'input[data-testid="pct"]': return { value: '10' };
+              case 'textarea[data-testid="commentary"]': return { value: 'commentary' };
+              default: return null;
+            }
+          }),
+        },
+      };
+    
+      // Call handleSubmit with the mock event
+      newerrorBill.handleSubmit(mockEvent);
+    
+      // Wait for console.error to be called
+      await waitFor(() => {
+        expect(consoleSpy).toHaveBeenCalledWith(new Error('Erreur mock 500 update'));
+      });
+    
+      // Clean up
+      consoleSpy.mockRestore();
     });
 
 ///////
