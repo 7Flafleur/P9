@@ -36,16 +36,12 @@ export default ({ data: bills=[], loading, error }) => {
 
 
           bills.forEach((bill)=>{
-          //  console.log("original date bills ui"
-          //  ,bill.originaldate)
 
-           bill.date = convertDateFormat(bill.date)      //
+           bill.date = convertDateFormat(bill.date)      
      
           })
           bills=bills.sort(compareBillDatesDesc1)
-          // bills.forEach((bill)=>{
-          //   bill.date=formatDate(bill.date)
-          // })
+ 
 
 
           
@@ -152,29 +148,3 @@ function convertDateFormat(dateString) {
   return `${year}-${paddedMonth}-${paddedDay}`;
 }
 
-
-// function compareBillDatesAsc(bill1,bill2){
-//   if(bill1.date>bill2.date){                 // bill1 should come after bill2
-//     return 1
-//   }
-//   else if (bill1.date<bill2.date){
-//     return -1
-//   }
-//   else{
-//     return 0;
-//   }
-
-// }
-
-
-// function formatDateToYYYYDDMM(dateObj) {
-//   let year = dateObj.getFullYear();
-//   let day = dateObj.getDate();
-//   let month = dateObj.getMonth() + 1; // getMonth() returns 0-11
-
-//   // Pad day and month with zeros if needed
-//   day = day < 10 ? '0' + day : day;
-//   month = month < 10 ? '0' + month : month;
-
-//   return `${year}-${day}-${month}`;
-// }
