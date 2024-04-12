@@ -2,25 +2,18 @@
 /**
  * @jest-environment jsdom
  */
-
-import * as dom from "@testing-library/dom"
-// import mockEvent from '../__mocks__/single_store.js'
-
-import {fireEvent, screen, waitFor} from "@testing-library/dom"
 import { checkFileExtension } from '../containers/NewBill.js'
-import mockStore from "../__mocks__/store"   
+import * as dom from "@testing-library/dom"
+import { fireEvent, screen, waitFor } from "@testing-library/dom"
+import fetchMock from 'jest-fetch-mock'
+import { localStorageMock } from "../__mocks__/localStorage.js"
 import mockErrorStore from "../__mocks__/errorstore.js"
-import NewBillUI from "../views/NewBillUI.js"
+import mockStore from "../__mocks__/store"   
 import NewBill from "../containers/NewBill.js"
-import { localmockStore } from "../__mocks__/store.js"
-import { ROUTES_PATH } from "../constants/routes.js";
-import Store from '../app/Store.js';
-import fetchMock from 'jest-fetch-mock';
-import { localStorageMock } from "../__mocks__/localStorage.js";
-
-
-
-import router from "../app/Router.js";
+import NewBillUI from "../views/NewBillUI.js"
+import { ROUTES_PATH } from "../constants/routes.js"
+import router from "../app/Router.js"
+import Store from '../app/Store.js'
 
 
 

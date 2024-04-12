@@ -1,19 +1,18 @@
-//////////////////////////////////////////////////////Annabelle
-import {fireEvent, screen, waitFor} from "@testing-library/dom"
-import userEvent from '@testing-library/user-event'
-import NewBillUI from "../views/NewBillUI.js"
-import { ROUTES, ROUTES_PATH } from "../constants/routes"
-import { localStorageMock } from "../__mocks__/localStorage.js"
-import mockStore from "../__mocks__/store"       //import mock data
 import { bills } from "../fixtures/bills"
-import router from "../app/Router"  
+import { fireEvent, screen, waitFor } from "@testing-library/dom"
+import { localStorageMock } from "../__mocks__/localStorage.js"
+import { ROUTES, ROUTES_PATH } from "../constants/routes"
+import mockStore from "../__mocks__/store"       //import mock data
 import NewBill from "../containers/NewBill.js"
+import NewBillUI from "../views/NewBillUI.js"
+import router from "../app/Router"  
+import userEvent from '@testing-library/user-event'
 
 jest.mock("../app/store", () => mockStore)  //create
 
 
 // test d'intégration POST
-describe("Given I am a user connected as Admin", () => {
+describe("Given I am a user connected as Employee", () => {
     describe("When I navigate to NewBills", () => {
     document.body.innerHTML = NewBillUI()   //html is created by NewBillUI
 let consoleSpy;
