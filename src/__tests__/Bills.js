@@ -206,6 +206,32 @@ describe("Given I am connected as an employee", () => {
       }
     });
 
+    
+    test("getBills handles errors in formatDate", async () => {
+      jest.mock('../app/format.js', () => ({
+        formatDate: jest.fn(() => { throw new Error("formatDate error"); }),
+        formatStatus: jest.fn(() => 'status')
+      }));
+    
+      // Call the getBills method
+      const bills = await realbills.getBills();
+    
+      consoleSpy = jest.spyOn(console, 'log');
+    
+      try {
+        // Call formatDate with a valid date string
+        console.log("Formatedate error", formatDate('2022-01-01'));
+      } catch (error) {
+        // Check that an error was logged
+        expect(consoleSpy).toHaveBeenCalledWith(new Error("formatDate error"), 'for', expect.anything());
+      }
+    });
+
+
+
+
+
+
   })
 
 
