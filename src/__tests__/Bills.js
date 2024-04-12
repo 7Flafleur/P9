@@ -6,14 +6,28 @@ import '@testing-library/jest-dom/extend-expect';   // import
 import * as dom from "@testing-library/dom"  // import entire library
 import BillsUI from "../views/BillsUI.js"
 import { bills } from "../fixtures/bills.js"
-import { ROUTES_PATH} from "../constants/routes.js";
-import {localStorageMock} from "../__mocks__/localStorage.js";
-import {localmockStore} from'../__mocks__/store.js'
+import { ROUTES_PATH } from "../constants/routes.js";
+import { localStorageMock } from "../__mocks__/localStorage.js";
+// import { localmockStore } from '../__mocks__/store.js'
+import mockStore from "../__mocks__/store"       //import mock data
 import RealBills from "../containers/Bills.js"
+import { formatDate,formatStatus } from '../app/format.js';
 
 import router from "../app/Router.js";
 
+
+
+
+
+
+jest.mock("../app/store", () => mockStore)  //mock original 
+
+
+
+
 describe("Given I am connected as an employee", () => {
+
+
   let realbills;
   let mockbills;
 
@@ -23,24 +37,28 @@ const mockDocument = {
   querySelectorAll: jest.fn().mockReturnValue([{ addEventListener: jest.fn() }])
 };
 const mockOnNavigate = jest.fn();
-const mockStore = localmockStore; 
 const mockLocalStorage = localStorageMock; 
 
 
-//mock instance
+// //mock instance
 
-mockbills = new RealBills({
-  document: mockDocument,
-  onNavigate: mockOnNavigate,
-  store: mockStore,
-  localStorage: mockLocalStorage
-});
+// mockbills = new RealBills({
+//   document: mockDocument,
+//   onNavigate: mockOnNavigate,
+//   store: mockStore,
+//   localStorage: mockLocalStorage
+// });
 
 
 
 
   describe("When I am on Bills Page", () => {
-    document.body.innerHTML = BillsUI({ data: bills }) //when on Bills page, body always needs to be rendered with billsUI
+    // document.body.innerHTML = BillsUI({ data: bills }) //when on Bills page, body always needs to be rendered with billsUI
+beforeEach(()=>{
+  router()
+  window.onNavigate(ROUTES_PATH.Bills)
+})
+
     test("Then bill icon in vertical layout should be highlighted", async () => {
 
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
@@ -50,8 +68,7 @@ mockbills = new RealBills({
       const root = document.createElement("div")
       root.setAttribute("id", "root")
       document.body.append(root)
-      router()
-      window.onNavigate(ROUTES_PATH.Bills)
+   
       await dom.waitFor(() => dom.screen.getByTestId('icon-window'))
       const windowIcon = dom.screen.getByTestId('icon-window')
       //to-do write expect expression
@@ -70,7 +87,7 @@ mockbills = new RealBills({
       realbills = new RealBills({
         document: document,
         onNavigate: onNavigate,
-        store: localmockStore,
+        store: mockStore,
         localStorage: localStorage
       });
     
@@ -91,11 +108,11 @@ mockbills = new RealBills({
     });
 
     test("Clicking on eye icon opens up modal with bill in it", ()=>{
-
+ document.body.innerHTML = BillsUI({ data: bills })
       realbills = new RealBills({
         document: document,
         onNavigate: onNavigate,
-        store: localmockStore,
+        store: mockStore,
         localStorage: localStorage
       });
 
@@ -107,10 +124,9 @@ $.fn.modal = jest.fn();
       
       const eye = document.querySelector("[data-billid='47qAXb6fIm2zOKkLzMro']");
 
-      console.log(eye)
 
       eye.addEventListener('click', realbills.handleClickIconEye(eye))
-      eye.addEventListener('click', console.log(eye))
+      
       dom.fireEvent.click(eye)
 
    
@@ -135,8 +151,8 @@ describe("Given I am a user connected as Employee", () => {
       const root = document.createElement("div")
       root.setAttribute("id", "root")
       document.body.append(root)
-      router()
-      window.onNavigate(ROUTES_PATH.Bills)
+      // router()
+      // window.onNavigate(ROUTES_PATH.Bills)
       await dom.waitFor(() => dom.screen.getByText("Mes notes de frais"))
       await dom.waitFor(()=> document.getElementById("data-table"))
       const contentPending  = await dom.screen.getByText("Type")
@@ -157,10 +173,67 @@ describe("Given I am a user connected as Employee", () => {
       expect(dom.screen.getByTestId("icon-mail")).toBeTruthy()
 
       const table=document.querySelector('#example')
-      const rows=dom.within(table).queryAllByRole('row');
-      expect(rows.length).not.toBe(0)
+      const rows=dom.within(table).queryAllByRole('cell');     //look for td,not th
+      console.log("number of bills",rows.length)
+      expect(rows.length).not.toEqual(0)
 
     })
 
   })
 })
+
+
+describe("When an API error occurs", ()=>{
+  beforeEach(() => {
+    jest.spyOn(mockStore, "bills")
+    Object.defineProperty(
+        window,
+        'localStorage',
+        { value: localStorageMock }
+    )
+    window.localStorage.setItem('user', JSON.stringify({
+      type: 'Employee',
+      email: "employee@test.tld"
+    }))
+    const root = document.createElement("div")
+    root.setAttribute("id", "root")
+    document.body.appendChild(root)
+    router()
+  })
+
+  test("tries to fetch bills, fails with 404 error",async ()=>{
+
+//mock bills method used for GET requests
+    mockStore.bills.mockImplementationOnce(() => {
+      return {
+        list : () =>  {                  //mock rejection of promise                      
+          return Promise.reject(new Error("Erreur 404"))
+        }
+      }})
+    await new Promise(process.nextTick);
+ 
+  } )
+
+  test("tries to fetch bills, returns error 500", async ()=>{
+
+    //mock bills method used for GET requests
+    mockStore.bills.mockImplementationOnce(() => {
+      return {
+        list : () =>  {                  //mock rejection of promise                      
+          return Promise.reject(new Error("Erreur 500"))
+        }
+      }})
+    await new Promise(process.nextTick);
+    const message = await dom.screen.getByText(/Erreur 500/)
+    expect(message).toBeTruthy()
+    
+  })
+
+
+
+})
+
+
+
+
+
