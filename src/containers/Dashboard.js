@@ -144,7 +144,7 @@ export default class {
     this.onNavigate(ROUTES_PATH['Dashboard'])
   }
 
-  handleShowTickets(e, bills, index) {
+  handleShowTickets(e, bills, index) {    //even counter event listenrer
     if (this.counter === undefined || this.index !== index) this.counter = 0    
     if (this.index === undefined || this.index !== index) this.index = index
     if (this.counter % 2 === 0) {
