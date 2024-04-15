@@ -11,7 +11,7 @@ import { localStorageMock } from "../__mocks__/localStorage.js";
 // import { localmockStore } from '../__mocks__/store.js'
 import mockStore from "../__mocks__/store"       //import mock data
 import RealBills from "../containers/Bills.js"
-import { formatDate,formatStatus } from '../app/format.js';
+import { convertDateFormat,formatDate,formatStatus } from '../app/format.js';
 
 
 
@@ -69,14 +69,7 @@ describe("Given I am connected as an employee", () => {
 
     })
 
-    function convertDateFormat(dateStr) {
-      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      const [day, month, year] = dateStr.split(' ');  //extract element from datestring
-      const paddedMonth = (months.indexOf(month) + 1).toString().padStart(2, '0');  //add 0 to index of month if it only has one digit (less than 10)
-      const currentYear = new Date().getFullYear(); // get current date
-      const century = year > currentYear % 100 ? '19' : '20'; //divide by 100 to get current year in two digit format
-      return `${century}${year}-${paddedMonth}-${day}`; //if date year is greater than current year, set first two digits of year to 19, else to 20
-    }
+
 
     test("Then bills should be ordered from earliest to latest", () => {
       let dates = Array.from(document.querySelectorAll(".date")).map(el => el.innerHTML);
@@ -101,13 +94,7 @@ describe("Given I am connected as an employee", () => {
 
 
 
-    ////////////////
-
-
-
-
-
-
+  
 
     test("Clicking on newBills button should redirect me to NewBills page", () => {
       realbills = new RealBills({
