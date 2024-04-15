@@ -68,6 +68,7 @@ describe("Given I am connected as an employee", () => {
       expect(windowIcon).toHaveClass('active-icon')
 
     })
+
     function convertDateFormat(dateStr) {
       const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
       const [day, month, year] = dateStr.split(' ');  //extract element from datestring
@@ -83,9 +84,6 @@ describe("Given I am connected as an employee", () => {
 
       dates = dates.map(convertDateFormat);
       // console.log(dates)
-
-      
-
       const antiChrono = (a, b) => ((a < b) ? 1 : -1)
       const datesSorted = [...dates].sort(antiChrono)
       expect(dates).toEqual(datesSorted)
