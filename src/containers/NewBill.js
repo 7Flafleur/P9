@@ -37,12 +37,11 @@ export default class NewBill {
       return;
     }
     else {
-
-
       const formData = new FormData()
       const email = JSON.parse(localStorage.getItem("user")).email
       formData.append('file', file)
       formData.append('email', email)
+      console.log("email",email)
 
       // interaction with store happens here!! 
       this.store
@@ -61,10 +60,6 @@ export default class NewBill {
         }).catch(error => console.error(error))
     }
   }
-
-
-
-
 
   handleSubmit = e => {    // ne pas appeler si pas de fichier valide
     e.preventDefault()

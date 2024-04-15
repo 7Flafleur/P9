@@ -8,7 +8,6 @@ import BillsUI from "../views/BillsUI.js"
 import { bills } from "../fixtures/bills.js"
 import { ROUTES_PATH } from "../constants/routes.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
-// import { localmockStore } from '../__mocks__/store.js'
 import mockStore from "../__mocks__/store"       //import mock data
 import RealBills from "../containers/Bills.js"
 import { convertDateFormat, formatDate, formatStatus } from '../app/format.js';
@@ -238,6 +237,8 @@ describe("Given I am a user connected as Employee", () => {
       const BillsList = await mockStore.bills().list();
       const numberOfBills = BillsList.length;
 
+      console.log("Number of bills in store",numberOfBills)
+
 
       //check if headers are correctly imported
       await dom.waitFor(() => {
@@ -250,9 +251,10 @@ describe("Given I am a user connected as Employee", () => {
         });
 
       })
-
+      
       //wait for correct number of bills to be retrieved
       const tableRows = dom.screen.getAllByRole('row')
+      console.log("number of rows displayed",tableRows.length)
       expect(tableRows.length).toBe(numberOfBills + 1) //tableheaders count as rows
 
     })
