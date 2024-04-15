@@ -11,14 +11,11 @@ import { localStorageMock } from "../__mocks__/localStorage.js";
 // import { localmockStore } from '../__mocks__/store.js'
 import mockStore from "../__mocks__/store"       //import mock data
 import RealBills from "../containers/Bills.js"
-import { convertDateFormat,formatDate,formatStatus } from '../app/format.js';
-
-
+import { convertDateFormat, formatDate, formatStatus } from '../app/format.js';
+import router from "../app/Router.js";
 
 jest.mock("../app/store", () => mockStore)  //mock original 
 
-
-import router from "../app/Router.js";
 
 describe("Given I am connected as an employee", () => {
   let realbills;
@@ -30,7 +27,7 @@ describe("Given I am connected as an employee", () => {
     querySelectorAll: jest.fn().mockReturnValue([{ addEventListener: jest.fn() }])
   };
   const mockOnNavigate = jest.fn();
-  
+
   const mockLocalStorage = localStorageMock;
 
 
@@ -42,11 +39,6 @@ describe("Given I am connected as an employee", () => {
     store: mockStore,
     localStorage: mockLocalStorage
   });
-
-
-
-
-
 
 
   describe("When I am on Bills Page", () => {
@@ -68,9 +60,6 @@ describe("Given I am connected as an employee", () => {
       expect(windowIcon).toHaveClass('active-icon')
 
     })
-
-
-
     test("Then bills should be ordered from earliest to latest", () => {
       let dates = Array.from(document.querySelectorAll(".date")).map(el => el.innerHTML);
       // console.log(dates)
@@ -89,12 +78,6 @@ describe("Given I am connected as an employee", () => {
     // const antiChrono = (a, b) => ((a < b) ? 1 : -1)
     // const datesSorted = [...dates].sort(antiChrono)
     // expect(dates).toEqual(datesSorted)
-
-
-
-
-
-  
 
     test("Clicking on newBills button should redirect me to NewBills page", () => {
       realbills = new RealBills({
@@ -129,14 +112,12 @@ describe("Given I am connected as an employee", () => {
         localStorage: localStorage
       });
 
-     console.log(mockStore)
+      console.log(mockStore)
 
       // Mock jQuery's modal function
       $.fn.modal = jest.fn();
 
       const eye = document.querySelector("[data-billid='47qAXb6fIm2zOKkLzMro']");
-
-
 
       eye.addEventListener('click', realbills.handleClickIconEye(eye))
 
@@ -153,30 +134,30 @@ describe("Given I am connected as an employee", () => {
 
     test('getBills calls store methods and returns formatted bills', async () => {
 
-    
+
       // Arrange, create mock data to mock successfull get retrieval from store
       const mockBills = [
         { date: '2022-01-01', status: 'pending' },
         { date: '2022-02-01', status: 'accepted' },
-        
+
       ];
       const mockStore = {
         bills: jest.fn().mockReturnThis(),
         list: jest.fn().mockResolvedValue(mockBills),
       };
-      
 
-      realbills= new RealBills({
-        document:document,
-        onNavigate:onNavigate,
-        store:mockStore,
-        localStorage:localStorage
-        
+
+      realbills = new RealBills({
+        document: document,
+        onNavigate: onNavigate,
+        store: mockStore,
+        localStorage: localStorage
+
       })
-    
+
       // 
       const bills = await realbills.getBills();
-    
+
       // Assert
       expect(mockStore.bills).toHaveBeenCalled();
       expect(mockStore.list).toHaveBeenCalled();
@@ -191,18 +172,18 @@ describe("Given I am connected as an employee", () => {
       }
     });
 
-    
+
     test("getBills handles errors in formatDate", async () => {
       jest.mock('../app/format.js', () => ({
         formatDate: jest.fn(() => { throw new Error("formatDate error"); }),
         formatStatus: jest.fn(() => 'status')
       }));
-    
+
       // Call the getBills method
       const bills = await realbills.getBills();
-    
+
       consoleSpy = jest.spyOn(console, 'log');
-    
+
       try {
         // Call formatDate with a valid date string
         console.log("Formatedate error", formatDate('2022-01-01'));
@@ -212,15 +193,7 @@ describe("Given I am connected as an employee", () => {
       }
     });
 
-
-
-
-
-
   })
-
-
-
 
 })
 
@@ -233,7 +206,7 @@ describe("Given I am a user connected as Employee", () => {
   // Mock data
 
   const mockOnNavigate = jest.fn();
-  
+
   const mockLocalStorage = localStorageMock;
 
 
@@ -246,21 +219,12 @@ describe("Given I am a user connected as Employee", () => {
     localStorage: mockLocalStorage
   });
 
- //number of bills in store 
-
-
-
-
-
-
-
-
-  
+  //number of bills in store 
 
   describe("When I navigate to Bills page", () => {
 
-    test("fetches bills from mock API GET", async ()=>{
-      
+    test("fetches bills from mock API GET", async () => {
+
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
       window.localStorage.setItem('user', JSON.stringify({
         type: 'Employee'
@@ -271,37 +235,36 @@ describe("Given I am a user connected as Employee", () => {
       router()
       window.onNavigate(ROUTES_PATH.Bills)
 
-      const BillsList=await mockStore.bills().list();
-      const numberOfBills=BillsList.length;
-    
+      const BillsList = await mockStore.bills().list();
+      const numberOfBills = BillsList.length;
+
 
       //check if headers are correctly imported
-await dom.waitFor(()=>{      const tableHeaders=dom.screen.getAllByRole('columnheader');
-const expectedTerms=['Type','Nom','Date','Montant', 'Statut','Actions']
+      await dom.waitFor(() => {
+        const tableHeaders = dom.screen.getAllByRole('columnheader');
+        const expectedTerms = ['Type', 'Nom', 'Date', 'Montant', 'Statut', 'Actions']
 
-expectedTerms.forEach(expectedTerm => {
-  const headerWithTerm = tableHeaders.find(header => header.textContent.includes(expectedTerm));
-  expect(headerWithTerm).toBeDefined();
-});
+        expectedTerms.forEach(expectedTerm => {
+          const headerWithTerm = tableHeaders.find(header => header.textContent.includes(expectedTerm));
+          expect(headerWithTerm).toBeDefined();
+        });
 
-})
+      })
 
-  //wait for correct number of bills to be retrieved
-
-      
-        const tableRows= dom.screen.getAllByRole('row')
-        expect(tableRows.length).toBe(numberOfBills+1) //tableheaders count as rows
+      //wait for correct number of bills to be retrieved
+      const tableRows = dom.screen.getAllByRole('row')
+      expect(tableRows.length).toBe(numberOfBills + 1) //tableheaders count as rows
 
     })
 
 
-    describe("When an API error occurs", ()=>{
+    describe("When an API error occurs", () => {
       beforeEach(() => {
         jest.spyOn(mockStore, "bills")
         Object.defineProperty(
-            window,
-            'localStorage',
-            { value: localStorageMock }
+          window,
+          'localStorage',
+          { value: localStorageMock }
         )
         window.localStorage.setItem('user', JSON.stringify({
           type: 'Employee',
@@ -313,38 +276,38 @@ expectedTerms.forEach(expectedTerm => {
         router()
       })
 
-      test("tries to fetch bills, fails with 404 error",async ()=>{
-
-//mock bills method used for GET requests
-        mockStore.bills.mockImplementationOnce(() => {
-          return {
-            list : () =>  {                  //mock rejection of promise                      
-              return Promise.reject(new Error("Erreur 404"))
-            }
-          }})
-        window.onNavigate(ROUTES_PATH.Bills)
-        await new Promise(process.nextTick);
-        const message = await dom.screen.getByText(/Erreur 404/)
-        expect(message).toBeTruthy()
-      } )
-
-      test("tries to fetch bills, returns error 500", async ()=>{
+      test("tries to fetch bills, fails with 404 error", async () => {
 
         //mock bills method used for GET requests
         mockStore.bills.mockImplementationOnce(() => {
           return {
-            list : () =>  {                  //mock rejection of promise                      
+            list: () => {                  //mock rejection of promise                      
+              return Promise.reject(new Error("Erreur 404"))
+            }
+          }
+        })
+        window.onNavigate(ROUTES_PATH.Bills)
+        await new Promise(process.nextTick);
+        const message = await dom.screen.getByText(/Erreur 404/)
+        expect(message).toBeTruthy()
+      })
+
+      test("tries to fetch bills, returns error 500", async () => {
+
+        //mock bills method used for GET requests
+        mockStore.bills.mockImplementationOnce(() => {
+          return {
+            list: () => {                  //mock rejection of promise                      
               return Promise.reject(new Error("Erreur 500"))
             }
-          }})
+          }
+        })
         window.onNavigate(ROUTES_PATH.Bills)
         await new Promise(process.nextTick);
         const message = await dom.screen.getByText(/Erreur 500/)
         expect(message).toBeTruthy()
-        
+
       })
-
-
 
     })
 
@@ -354,7 +317,7 @@ expectedTerms.forEach(expectedTerm => {
 
 
 
-//Bills method looks like this: 
+//Bills method looks like this:
 
 // const bills = store.bills(); returns mockedBills
 // mockedBills.list();

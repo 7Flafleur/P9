@@ -22,46 +22,47 @@ export default class NewBill {
 
 
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
-    const filenamevalue= this.document.querySelector(`input[data-testid="file"]`)
+    const filenamevalue = this.document.querySelector(`input[data-testid="file"]`)
     // console.log("File:", file)
     // console.log("Target value",e.target.value)
-          
-  const filePath = e.target.value.split(/\\/g)
-  const fileName = filePath[filePath.length-1]
+
+    const filePath = e.target.value.split(/\\/g)
+    const fileName = filePath[filePath.length - 1]
 
 
- if (!checkFileExtension(fileName)){
-  // vérifier 
-  alert("Invalid file extension")
-  filenamevalue.value=''
-  return;
- }
- else{
+    if (!checkFileExtension(fileName)) {
+      // vérifier 
+      alert("Invalid file extension")
+      filenamevalue.value = ''
+      return;
+    }
+    else {
 
-    
-    const formData = new FormData()
-    const email = JSON.parse(localStorage.getItem("user")).email
-    formData.append('file', file)
-    formData.append('email', email)
 
-    // interaction with store happens here!! 
-    this.store
-      .bills()   // creates new ApiEntity to use its methods               
-      .create({      //use create method to POST object with data and header
-        data: formData,
-        headers: {
-          noContentType: true
-        }
-      })
-      .then(({fileUrl, key}) => {
-        // console.log(formData)
-        this.billId = key
-        this.fileUrl = fileUrl
-        this.fileName = fileName
-      }).catch(error => console.error(error))
-  }}
+      const formData = new FormData()
+      const email = JSON.parse(localStorage.getItem("user")).email
+      formData.append('file', file)
+      formData.append('email', email)
 
-  
+      // interaction with store happens here!! 
+      this.store
+        .bills()   // creates new ApiEntity to use its methods               
+        .create({      //use create method to POST object with data and header
+          data: formData,
+          headers: {
+            noContentType: true
+          }
+        })
+        .then(({ fileUrl, key }) => {
+          // console.log(formData)
+          this.billId = key
+          this.fileUrl = fileUrl
+          this.fileName = fileName
+        }).catch(error => console.error(error))
+    }
+  }
+
+
 
 
 
@@ -73,9 +74,9 @@ export default class NewBill {
     const bill = {
       email,
       type: e.target.querySelector(`select[data-testid="expense-type"]`).value,
-      name:  e.target.querySelector(`input[data-testid="expense-name"]`).value,
+      name: e.target.querySelector(`input[data-testid="expense-name"]`).value,
       amount: parseInt(e.target.querySelector(`input[data-testid="amount"]`).value),
-      date:  e.target.querySelector(`input[data-testid="datepicker"]`).value,
+      date: e.target.querySelector(`input[data-testid="datepicker"]`).value,
       vat: e.target.querySelector(`input[data-testid="vat"]`).value,
       pct: parseInt(e.target.querySelector(`input[data-testid="pct"]`).value) || 20,
       commentary: e.target.querySelector(`textarea[data-testid="commentary"]`).value,
@@ -100,17 +101,17 @@ export default class NewBill {
 
 
 
-  
+
   // not need to cover this function by tests
   updateBill = (bill) => {
     if (this.store) {
       this.store
-      .bills()
-      .update({data: JSON.stringify(bill), selector: this.billId})
-      .then(() => {
-        this.onNavigate(ROUTES_PATH['Bills'])
-      })
-      .catch(error => console.error(error))
+        .bills()
+        .update({ data: JSON.stringify(bill), selector: this.billId })
+        .then(() => {
+          this.onNavigate(ROUTES_PATH['Bills'])
+        })
+        .catch(error => console.error(error))
     }
   }
 }
@@ -122,18 +123,17 @@ export default class NewBill {
 
 
 
-export function checkFileExtension(fileName){
-  
-      // Get the file extension
-      const fileExtension = fileName.split('.').pop()
+export function checkFileExtension(fileName) {
 
-      // Check the file extension
-      if (fileExtension !== 'jpg' && fileExtension !== 'png' && fileExtension !== 'jpeg') {
-        //  console.error('Invalid file extension')
-        // alert("invalid file extention")
-        return false;
-      }
-      else
-      {return true;}
-    
+  // Get the file extension
+  const fileExtension = fileName.split('.').pop()
+
+  // Check the file extension
+  if (fileExtension !== 'jpg' && fileExtension !== 'png' && fileExtension !== 'jpeg') {
+    //  console.error('Invalid file extension')
+    // alert("invalid file extention")
+    return false;
+  }
+  else { return true; }
+
 }
