@@ -61,10 +61,10 @@ describe("Given I am connected as an employee", () => {
     })
     test("Then bills should be ordered from earliest to latest", () => {
       let dates = Array.from(document.querySelectorAll(".date")).map(el => el.innerHTML);
-      // console.log(dates)
+      // //console.log(dates)
 
       dates = dates.map(convertDateFormat);
-      // console.log(dates)
+      // //console.log(dates)
       const antiChrono = (a, b) => ((a < b) ? 1 : -1)
       const datesSorted = [...dates].sort(antiChrono)
       expect(dates).toEqual(datesSorted)
@@ -111,7 +111,7 @@ describe("Given I am connected as an employee", () => {
         localStorage: localStorage
       });
 
-      console.log(mockStore)
+      //console.log(mockStore)
 
       // Mock jQuery's modal function
       $.fn.modal = jest.fn();
@@ -185,7 +185,7 @@ describe("Given I am connected as an employee", () => {
 
       try {
         // Call formatDate with a valid date string
-        console.log("Formatedate error", formatDate('2022-01-01'));
+        //console.log("Formatedate error", formatDate('2022-01-01'));
       } catch (error) {
         // Check that an error was logged
         expect(consoleSpy).toHaveBeenCalledWith(new Error("formatDate error"), 'for', expect.anything());
@@ -237,7 +237,7 @@ describe("Given I am a user connected as Employee", () => {
       const BillsList = await mockStore.bills().list();
       const numberOfBills = BillsList.length;
 
-      console.log("Number of bills in store",numberOfBills)
+      ////console.log("Number of bills in store",numberOfBills)
 
 
       //check if headers are correctly imported
@@ -254,7 +254,7 @@ describe("Given I am a user connected as Employee", () => {
       
       //wait for correct number of bills to be retrieved
       const tableRows = dom.screen.getAllByRole('row')
-      console.log("number of rows displayed",tableRows.length)
+      ////console.log("number of rows displayed",tableRows.length)
       expect(tableRows.length).toBe(numberOfBills + 1) //tableheaders count as rows
 
     })

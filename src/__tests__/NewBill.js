@@ -262,7 +262,7 @@ describe("Given I am connected as an employee", () => {
 
       const response = await Store.bills().create({ data: JSON.stringify(mockData) });
 
-      console.log("Post response",response)
+      // console.log("Post response",response)
 
       expect(fetch).toHaveBeenCalledTimes(1);
       expect(fetch).toHaveBeenCalledWith('http://localhost:5678/bills', {
