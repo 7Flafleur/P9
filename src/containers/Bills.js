@@ -38,7 +38,7 @@ export default class {
             try {
               return {
                 ...doc,
-                originaldate:doc.date,  //date en format yyyy-mm-dd
+              
                 date: formatDate(doc.date),
                 status: formatStatus(doc.status)
               }
@@ -51,6 +51,7 @@ export default class {
                 date: doc.date,
                 status: formatStatus(doc.status)
               }
+              
             }
           })
 

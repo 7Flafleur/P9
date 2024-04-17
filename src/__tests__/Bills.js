@@ -164,7 +164,6 @@ describe("Given I am connected as an employee", () => {
       for (let i = 0; i < mockBills.length; i++) {
         expect(bills[i]).toEqual({
           ...mockBills[i],
-          originaldate: mockBills[i].date,
           date: formatDate(mockBills[i].date),
           status: formatStatus(mockBills[i].status),
         });
