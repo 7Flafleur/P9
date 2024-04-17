@@ -36,9 +36,8 @@ export default class {
         let bills = snapshot
           .map(doc => {
             try {
-              return {
-                ...doc,
-              
+              return {              //if successful, return new doc abject with formatted date and status
+                ...doc,            //spread  operator is also used on objects
                 date: formatDate(doc.date),
                 status: formatStatus(doc.status)
               }
@@ -46,7 +45,7 @@ export default class {
               // if for some reason, corrupted data was introduced, we manage here failing formatDate function
               // log the error and return unformatted date in that case
               console.log(e,'for',doc)
-              return {
+              return {                                         
                 ...doc,
                 date: doc.date,
                 status: formatStatus(doc.status)
@@ -55,7 +54,7 @@ export default class {
             }
           })
 
-        return bills;
+        return bills;            //array of bills
       })
     }
   }
