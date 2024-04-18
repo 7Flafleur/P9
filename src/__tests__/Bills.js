@@ -196,7 +196,7 @@ describe("Given I am connected as an employee", () => {
       }));
 
       // Call the getBills method
-      const bills = await realbills.getBills();
+    await realbills.getBills();
 
       consoleSpy = jest.spyOn(console, 'log');
 
@@ -209,8 +209,53 @@ describe("Given I am connected as an employee", () => {
     });
 
   })
+test("getbills logs unformatted dates in case of formatdate error",async ()=>{
+  
+      // create mock data to mock successfull get retrieval from store
+      const mockBills = [
+        { date: '-------', status: 'pending' },
+        { date: ' ', status: 'accepted' }
+        
+
+      ];
+      const mockStore = {
+        bills: jest.fn().mockReturnThis(),
+        list: jest.fn().mockResolvedValue(mockBills),
+      };
+
+
+  const    realbills2 = new RealBills({
+        document: document,
+        onNavigate: onNavigate,
+        store: mockStore,
+        localStorage: localStorage
+
+      })
+
+      consoleSpy2 = jest.spyOn(console, 'log');
+
+      // 
+      const bills= await realbills2.getBills();
+      
+      expect(mockStore.bills).toHaveBeenCalled();
+      expect(mockStore.list).toHaveBeenCalled();
+      expect(bills).toHaveLength(mockBills.length);
+
+      for (let i = 0; i < mockBills.length; i++) {
+        expect(bills[i]).toEqual({
+          ...mockBills[i],
+          date:mockBills[i].date,
+          status: formatStatus(mockBills[i].status),
+        });
+        
+      }
+
+      console.log("Unformatted bills",bills)
 
 })
+})
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // test d'intégration GET
