@@ -125,8 +125,8 @@ export function checkFileExtension(fileName) {
 
   // Check the file extension
   if (fileExtension !== 'jpg' && fileExtension !== 'png' && fileExtension !== 'jpeg') {
-    //  console.error('Invalid file extension')
-    // alert("invalid file extention")
+    
+    alert("invalid file extention")
     return false;
   }
   else { return true; }

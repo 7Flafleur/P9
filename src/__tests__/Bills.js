@@ -136,7 +136,7 @@ describe("Given I am connected as an employee", () => {
     test('getBills calls store methods and returns formatted bills', async () => {
 
 
-      // Arrange, create mock data to mock successfull get retrieval from store
+      // create mock data to mock successfull get retrieval from store
       const mockBills = [
         { date: '2022-01-01', status: 'pending' },
         { date: '2022-02-01', status: 'accepted' },
@@ -151,28 +151,39 @@ describe("Given I am connected as an employee", () => {
       realbills = new RealBills({
         document: document,
         onNavigate: onNavigate,
-        store: mockStore,
+        store: mockStore,            // realbills returns mockBills
         localStorage: localStorage
 
       })
 
       // 
-      const bills = await realbills.getBills(mockBills);
+      const bills = await realbills.getBills();
+
+    //console.log("bills",bills)
+
 
       // Assert
       expect(mockStore.bills).toHaveBeenCalled();
       expect(mockStore.list).toHaveBeenCalled();
       expect(bills).toHaveLength(mockBills.length);
+      
+
       for (let i = 0; i < mockBills.length; i++) {
-        expect(bills[i]).toEqual({
+        const expectedBill = {
           ...mockBills[i],
           date: formatDate(mockBills[i].date),
           status: formatStatus(mockBills[i].status),
-        });
+        };
+      //console.log('Expected:', expectedBill);
+      //console.log('Actual:', bills[i]);
+        expect(bills[i]).toEqual(expectedBill);
       }
+
+      console/log("mockbills",mockBills)
+console.log("length",mockBills.length)
     });
     
-    console.log("Bills", bills)
+
     
 
     

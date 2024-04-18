@@ -4,10 +4,10 @@ import { fireEvent, screen, waitFor } from "@testing-library/dom"
 import fetchMock from 'jest-fetch-mock'
 import { localStorageMock } from "../__mocks__/localStorage.js"
 import mockErrorStore from "../__mocks__/errorstore.js"
-import mockStore from "../__mocks__/store"   
+import mockStore from "../__mocks__/store"
 import NewBill from "../containers/NewBill.js"
 import NewBillUI from "../views/NewBillUI.js"
-import {ROUTES, ROUTES_PATH } from "../constants/routes.js"
+import { ROUTES, ROUTES_PATH } from "../constants/routes.js"
 import router from "../app/Router.js"
 import Store from '../app/Store.js'
 
@@ -22,221 +22,195 @@ describe("Given I am connected as an employee", () => {
   }));
 })
 
-  describe("When I am on NewBill Page", () => {
-    document.body.innerHTML = NewBillUI()   //html is created by NewBillUI
-    let newBillmocked;
-    let spy1;
-    let spy2;
+describe("When I am on NewBill Page", () => {
+  document.body.innerHTML = NewBillUI()   //html is created by NewBillUI
+  let newBillmocked;
+  let spy1;
+  let spy2;
 
-    test("checkFileExtension returns false when handed file other than jpeg, jpg or png format", async () => {
-      window.alert = jest.fn();
-
-
-      checkFileExtension('test.txt')
-      expect(window.alert).not.toHaveBeenCalled();
+  test("checkFileExtension returns false when handed file other than jpeg, jpg or png format", async () => {
+    window.alert = jest.fn();
 
 
-      expect(checkFileExtension('test.txt')).toBe(false)
-
-      window.alert.mockRestore();
-    }); //end checkfileextension
-
-    test("handleChangeFile stops when file extension other than png, jpg or jpeg is used", () => {
+    checkFileExtension('test.txt')
+    expect(window.alert).toHaveBeenCalled();
 
 
-      //create instance
-      newBillmocked = new NewBill({
-        document: {
-          querySelector: jest.fn().mockReturnValue({
-            addEventListener: jest.fn(),
-            files: ['mockFile'],
-          }),
-        },
-        onNavigate: jest.fn(),
-        store: {
-          bills: jest.fn().mockReturnValue({
-            create: jest.fn().mockResolvedValue({ fileUrl: 'mockFileUrl', key: 'mockKey' }),
-            update: jest.fn().mockResolvedValue({}),
-          }),
-        },
-        localStorage: {
-          getItem: jest.fn(),
-          setItem: jest.fn(),
-        },
-      });
+    expect(checkFileExtension('test.txt')).toBe(false)
 
-      spy1 = jest.spyOn(newBillmocked.store, 'bills')
+    window.alert.mockRestore();
+  }); //end checkfileextension
 
-      const mockeventinvalidfile = {
-        preventDefault: jest.fn(),
-        target: {
-          value: 'C:\fakepath\database_dev.sqlite'
-        }
-
-      }
-      //////////////////////////////////////end setup
-
-      newBillmocked.handleChangeFile(mockeventinvalidfile);
-
-      expect(spy1).not.toHaveBeenCalled();
-
-      //////////////////// end test
-
-      spy1.mockRestore();
-
-      newBillmocked = null;
+  test("handleChangeFile stops when file extension other than png, jpg or jpeg is used", () => {
 
 
-      //////cleanup 
+    //create instance
+    newBillmocked = new NewBill({
+      document: {
+        querySelector: jest.fn().mockReturnValue({
+          addEventListener: jest.fn(),
+          files: ['mockFile'],
+        }),
+      },
+      onNavigate: jest.fn(),
+      store: {
+        bills: jest.fn().mockReturnValue({
+          create: jest.fn().mockResolvedValue({ fileUrl: 'mockFileUrl', key: 'mockKey' }),
+          update: jest.fn().mockResolvedValue({}),
+        }),
+      },
+      localStorage: {
+        getItem: jest.fn(),
+        setItem: jest.fn(),
+      },
+    });
 
-    }); //end handlechangefile
+    spy1 = jest.spyOn(newBillmocked.store, 'bills')
 
-    test("handleChangeFile submits uploaded file correctly ", async () => {
-
-      //instance
-
-      //create instance
-      newBillmocked = new NewBill({
-        document: {
-          querySelector: jest.fn().mockReturnValue({
-            addEventListener: jest.fn(),
-            files: ['mockFile'],
-          }),
-        },
-        onNavigate: jest.fn(),
-        store: {
-          bills: jest.fn().mockReturnValue({
-            create: jest.fn().mockResolvedValue({ fileUrl: 'mockFileUrl', key: 'mockKey' }),
-            update: jest.fn().mockResolvedValue({}),
-          }),
-        },
-        localStorage: {
-          getItem: jest.fn(),
-          setItem: jest.fn(),
-        },
-      });
-
-      spy2 = jest.spyOn(newBillmocked.store.bills(), 'create')
-
-
-      //mock formdata
-      global.FormData = jest.fn(() => ({
-        append: jest.fn(),
-      }));
-
-      //mock event
-
-      const mockeventvalidfile = {
-        preventDefault: jest.fn(),
-        target: {
-          value: 'C:\\fakepath\test.jpg'
-        }
-
+    const mockeventinvalidfile = {
+      preventDefault: jest.fn(),
+      target: {
+        value: 'C:\fakepath\database_dev.sqlite'
       }
 
-      const headers = { noContentType: true }
+    }
+    //////////////////////////////////////end setup
 
-      //mock alert
+    newBillmocked.handleChangeFile(mockeventinvalidfile);
 
-      window.alert = jest.fn();
-      /////
+    expect(spy1).not.toHaveBeenCalled();
 
-      await newBillmocked.handleChangeFile(mockeventvalidfile)
+    //////////////////// end test
 
+    spy1.mockRestore();
 
-      // Check if create() was called with mock FormData and headers
-      expect(spy2).toHaveBeenCalledWith({ data: expect.any(Object), headers: headers });
-      expect(window.alert).not.toHaveBeenCalled();
-
-      // Clean up
-      spy2.mockRestore();
-      newBillmocked = null;
-      window.alert.mockRestore();
+    newBillmocked = null;
 
 
-    }) //end correct changeFile
+    //////cleanup 
+
+  }); //end handlechangefile
+
+  test("handleChangeFile submits uploaded file correctly ", async () => {
+
+    //instance
+
+    //create instance
+    newBillmocked = new NewBill({
+      document: {
+        querySelector: jest.fn().mockReturnValue({
+          addEventListener: jest.fn(),
+          files: ['mockFile'],
+        }),
+      },
+      onNavigate: jest.fn(),
+      store: {
+        bills: jest.fn().mockReturnValue({
+          create: jest.fn().mockResolvedValue({ fileUrl: 'mockFileUrl', key: 'mockKey' }),
+          update: jest.fn().mockResolvedValue({}),
+        }),
+      },
+      localStorage: {
+        getItem: jest.fn(),
+        setItem: jest.fn(),
+      },
+    });
+
+    spy2 = jest.spyOn(newBillmocked.store.bills(), 'create')
 
 
-    test("handleSubmit calls function to submit new bill with inputted data", () => {
-      // Create a mock event object
-      const mockEvent = {
-        preventDefault: jest.fn(),
-        target: {
-          querySelector: jest.fn().mockImplementation((selector) => {
-            switch (selector) {
-              case 'select[data-testid="expense-type"]': return { value: 'type' };
-              case 'input[data-testid="expense-name"]': return { value: 'name' };
-              case 'input[data-testid="amount"]': return { value: '100' };
-              case 'input[data-testid="datepicker"]': return { value: '2022-01-01' };
-              case 'input[data-testid="vat"]': return { value: '20' };
-              case 'input[data-testid="pct"]': return { value: '10' };
-              case 'textarea[data-testid="commentary"]': return { value: 'commentary' };
-              default: return null;
-            }
-          }),
-        },
-      };
+    //mock formdata
+    global.FormData = jest.fn(() => ({
+      append: jest.fn(),
+    }));
 
-      const mockOnNavigate = jest.fn();
+    //mock event
 
-      // Mock localStorage.getItem
-      const mockLocalStorageGetItem = jest.spyOn(window.localStorage.__proto__, 'getItem');
-      mockLocalStorageGetItem.mockImplementation(() => JSON.stringify({ email: 'test@example.com' }));
+    const mockeventvalidfile = {
+      preventDefault: jest.fn(),
+      target: {
+        value: 'C:\\fakepath\test.jpg'
+      }
 
-      // Create an instance of the class that contains handleSubmit
-      const instance = new NewBill({
-        document: document,
-        onNavigate: mockOnNavigate,
-        localStorage: window.localStorage,
-        store: mockStore,
-      });
+    }
 
-      // Set fileUrl and fileName on the instance
-      instance.fileUrl = 'http://example.com/file.jpg';
-      instance.fileName = 'file.jpg';
+    const headers = { noContentType: true }
 
-      // Create a spy on the updateBill method
-      const mockUpdateBill = jest.spyOn(instance, 'updateBill');
-      mockUpdateBill.mockImplementation(() => { });
+    //mock alert
 
-      // Call handleSubmit with the mock event
-      instance.handleSubmit(mockEvent);
+    window.alert = jest.fn();
+    /////
+
+    await newBillmocked.handleChangeFile(mockeventvalidfile)
 
 
-      // Call handleSubmit with the mock event
-      instance.handleSubmit(mockEvent);
+    // Check if create() was called with mock FormData and headers
+    expect(spy2).toHaveBeenCalledWith({ data: expect.any(Object), headers: headers });
+    expect(window.alert).not.toHaveBeenCalled();
 
-      // Check that preventDefault was called
-      expect(mockEvent.preventDefault).toHaveBeenCalled();
+    // Clean up
+    spy2.mockRestore();
+    newBillmocked = null;
+    window.alert.mockRestore();
 
-      // Check that updateBill was called with the correct bill
-      expect(mockUpdateBill).toHaveBeenCalledWith({
-        email: 'test@example.com',
-        type: 'type',
-        name: 'name',
-        amount: 100,
-        date: '2022-01-01',
-        vat: '20',
-        pct: 10,
-        commentary: 'commentary',
-        fileUrl: 'http://example.com/file.jpg',
-        fileName: 'file.jpg',
-        status: 'pending',
-      });
 
-      // Check that onNavigate was called with the correct path
-      expect(mockOnNavigate).toHaveBeenCalledWith(ROUTES_PATH['Bills']);
+  }) //end correct changeFile
 
-    }); // end test  handlesubmit correct
 
-    
+  test("handleSubmit calls function to submit new bill with inputted data", () => {
+    // Create a mock event object
+    const mockEvent = {
+      preventDefault: jest.fn(),
+      target: {
+        querySelector: jest.fn().mockImplementation((selector) => {
+          switch (selector) {
+            case 'select[data-testid="expense-type"]': return { value: 'type' };
+            case 'input[data-testid="expense-name"]': return { value: 'name' };
+            case 'input[data-testid="amount"]': return { value: '100' };
+            case 'input[data-testid="datepicker"]': return { value: '2022-01-01' };
+            case 'input[data-testid="vat"]': return { value: '20' };
+            case 'input[data-testid="pct"]': return { value: '10' };
+            case 'textarea[data-testid="commentary"]': return { value: 'commentary' };
+            default: return null;
+          }
+        }),
+      },
+    };
 
-  }); // end second describe block
+    const mockOnNavigate = jest.fn();
 
-///fist part integration tests
-  describe(' handles POST requests corectly', () => {
-    fetchMock.enableMocks();
-    const mockData = {
+    // Mock localStorage.getItem
+    const mockLocalStorageGetItem = jest.spyOn(window.localStorage.__proto__, 'getItem');
+    mockLocalStorageGetItem.mockImplementation(() => JSON.stringify({ email: 'test@example.com' }));
+
+    // Create an instance of the class that contains handleSubmit
+    const instance = new NewBill({
+      document: document,
+      onNavigate: mockOnNavigate,
+      localStorage: window.localStorage,
+      store: mockStore,
+    });
+
+    // Set fileUrl and fileName on the instance
+    instance.fileUrl = 'http://example.com/file.jpg';
+    instance.fileName = 'file.jpg';
+
+    // Create a spy on the updateBill method
+    const mockUpdateBill = jest.spyOn(instance, 'updateBill');
+    mockUpdateBill.mockImplementation(() => { });
+
+    // Call handleSubmit with the mock event
+    instance.handleSubmit(mockEvent);
+
+
+    // Call handleSubmit with the mock event
+    instance.handleSubmit(mockEvent);
+
+    // Check that preventDefault was called
+    expect(mockEvent.preventDefault).toHaveBeenCalled();
+
+    // Check that updateBill was called with the correct bill
+    expect(mockUpdateBill).toHaveBeenCalledWith({
       email: 'test@example.com',
       type: 'type',
       name: 'name',
@@ -248,232 +222,265 @@ describe("Given I am connected as an employee", () => {
       fileUrl: 'http://example.com/file.jpg',
       fileName: 'file.jpg',
       status: 'pending',
+    });
+
+    // Check that onNavigate was called with the correct path
+    expect(mockOnNavigate).toHaveBeenCalledWith(ROUTES_PATH['Bills']);
+
+  }); // end test  handlesubmit correct
+
+
+
+}); // end second describe block
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+///fist part integration tests
+describe(' handles POST requests corectly', () => {
+  fetchMock.enableMocks();
+  const mockData = {
+    email: 'test@example.com',
+    type: 'type',
+    name: 'name',
+    amount: 100,
+    date: '2022-01-01',
+    vat: '20',
+    pct: 10,
+    commentary: 'commentary',
+    fileUrl: 'http://example.com/file.jpg',
+    fileName: 'file.jpg',
+    status: 'pending',
+  };
+
+
+
+  test('should make a POST request with correct URL and body', async () => {
+    console.log("Store", Store)
+
+
+    const expectedResponse = { result: 'success' };
+
+    fetch.mockResponseOnce(JSON.stringify(expectedResponse));
+
+    const response = await Store.bills().create({ data: JSON.stringify(mockData) });
+
+    // console.log("Post response",response)
+
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledWith('http://localhost:5678/bills', {
+      method: 'POST',
+      body: JSON.stringify(mockData),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer {\"email\":\"test@example.com\"}",
+      },
+    });
+
+    expect(response).toEqual(expectedResponse);
+  });
+
+
+
+  // POST TESTS WITH NEW STORE////////////////////////////
+
+  test('should handle errors correctly when submitting a bill', async () => {
+    // Create a spy on console.error
+    const consoleSpy = jest.spyOn(console, 'error');
+
+    // Set up your other variables (like document, onNavigate, etc.)
+    // ...
+
+    // Create a new instance of NewBill with the errorStore
+    const newerrorBill = new NewBill({
+      document, onNavigate: jest.fn(), store: mockErrorStore, localStorage: window.localStorage
+    });
+
+    // Create a mock event object
+    const mockEvent = {
+      preventDefault: jest.fn(),
+      target: {
+        querySelector: jest.fn().mockImplementation((selector) => {
+          switch (selector) {
+            case 'select[data-testid="expense-type"]': return { value: 'type' };
+            case 'input[data-testid="expense-name"]': return { value: 'name' };
+            case 'input[data-testid="amount"]': return { value: '100' };
+            case 'input[data-testid="datepicker"]': return { value: '2022-01-01' };
+            case 'input[data-testid="vat"]': return { value: '20' };
+            case 'input[data-testid="pct"]': return { value: '10' };
+            case 'textarea[data-testid="commentary"]': return { value: 'commentary' };
+            default: return null;
+          }
+        }),
+      },
     };
 
+    // Call handleSubmit with the mock event
+    newerrorBill.handleSubmit(mockEvent);
 
-
-    test('should make a POST request with correct URL and body', async () => {
-      // console.log("Store", Store)
-
-
-      const expectedResponse = { result: 'success' };
-
-      fetch.mockResponseOnce(JSON.stringify(expectedResponse));
-
-      const response = await Store.bills().create({ data: JSON.stringify(mockData) });
-
-      // console.log("Post response",response)
-
-      expect(fetch).toHaveBeenCalledTimes(1);
-      expect(fetch).toHaveBeenCalledWith('http://localhost:5678/bills', {
-        method: 'POST',
-        body: JSON.stringify(mockData),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': "Bearer {\"email\":\"test@example.com\"}",
-        },
-      });
-
-      expect(response).toEqual(expectedResponse);
+    // Wait for console.error to be called
+    await waitFor(() => {
+      expect(consoleSpy).toHaveBeenCalledWith(new Error('Erreur mock 500 update'));
     });
 
-    
+    // Clean up
+    consoleSpy.mockRestore();
+  });
 
-    // POST TESTS WITH NEW STORE
-    
-    test('should handle errors correctly when submitting a bill', async () => {
-      // Create a spy on console.error
-      const consoleSpy = jest.spyOn(console, 'error');
-    
-      // Set up your other variables (like document, onNavigate, etc.)
-      // ...
-    
-      // Create a new instance of NewBill with the errorStore
-      const newerrorBill = new NewBill({
-        document, onNavigate:jest.fn(), store: mockErrorStore, localStorage: window.localStorage
-      });
-    
-      // Create a mock event object
-      const mockEvent = {
-        preventDefault: jest.fn(),
-        target: {
-          querySelector: jest.fn().mockImplementation((selector) => {
-            switch (selector) {
-              case 'select[data-testid="expense-type"]': return { value: 'type' };
-              case 'input[data-testid="expense-name"]': return { value: 'name' };
-              case 'input[data-testid="amount"]': return { value: '100' };
-              case 'input[data-testid="datepicker"]': return { value: '2022-01-01' };
-              case 'input[data-testid="vat"]': return { value: '20' };
-              case 'input[data-testid="pct"]': return { value: '10' };
-              case 'textarea[data-testid="commentary"]': return { value: 'commentary' };
-              default: return null;
-            }
-          }),
-        },
-      };
-    
-      // Call handleSubmit with the mock event
-      newerrorBill.handleSubmit(mockEvent);
-    
-      // Wait for console.error to be called
-      await waitFor(() => {
-        expect(consoleSpy).toHaveBeenCalledWith(new Error('Erreur mock 500 update'));
-      });
-    
-      // Clean up
-      consoleSpy.mockRestore();
+
+
+  test('should handle errors correctly when creating a bill', async () => {
+    // Create a spy on console.error
+    const consoleSpy = jest.spyOn(console, 'error');
+
+    // Set up your other variables (like document, onNavigate, etc.)
+    // ...
+
+    // Create a new instance of NewBill with the errorStore
+    const newerrorBill = new NewBill({
+      document, onNavigate: jest.fn(), store: mockErrorStore, localStorage: window.localStorage
     });
 
+    // Create a mock file
+    const mockFile = new File([''], 'filename.txt', { type: 'text/plain' });
+
+    const mockeventvalidfile = {
+      preventDefault: jest.fn(),
+      target: {
+        value: 'C:\\fakepath\test.jpg'
+      }
+
+    }
 
 
-    test('should handle errors correctly when creating a bill', async () => {
-      // Create a spy on console.error
-      const consoleSpy = jest.spyOn(console, 'error');
-    
-      // Set up your other variables (like document, onNavigate, etc.)
-      // ...
-    
-      // Create a new instance of NewBill with the errorStore
-      const newerrorBill = new NewBill({
-        document, onNavigate:jest.fn(), store: mockErrorStore, localStorage: window.localStorage
-      });
-    
-     // Create a mock file
-const mockFile = new File([''], 'filename.txt', { type: 'text/plain' });
+    // Call handleChangeFile with the mock event
+    newerrorBill.handleChangeFile(mockeventvalidfile);
 
-const mockeventvalidfile = {
-  preventDefault: jest.fn(),
-  target: {
-    value: 'C:\\fakepath\test.jpg'
-  }
-
-}
-    
-    
-// Call handleChangeFile with the mock event
-newerrorBill.handleChangeFile(mockeventvalidfile);
-
-// Wait for console.error to be called
-await waitFor(() => {
-  expect(consoleSpy).toHaveBeenCalledWith(new Error('Mock error 500 create'));
-});
-    
-      // Clean up
-      consoleSpy.mockRestore();
+    // Wait for console.error to be called
+    await waitFor(() => {
+      expect(consoleSpy).toHaveBeenCalledWith(new Error('Mock error 500 create'));
     });
 
-///////
+    // Clean up
+    consoleSpy.mockRestore();
+  });
+
+  ///////
 
 
-//////////
+  //////////
 
-  });//end integration test describe
+});//end integration test describe
 
-// Integration tests with
+
+
+// Integration tests with mockstore ////////////////////////////////////////////////
 describe("Given I am a user connected as Employee", () => {
   describe("When I navigate to NewBills", () => {
-  document.body.innerHTML = NewBillUI()   //html is created by NewBillUI
-let consoleSpy;
+    document.body.innerHTML = NewBillUI()   //html is created by NewBillUI
+    let consoleSpy;
 
 
-const onNavigate = (pathname) => {
-  document.body.innerHTML = ROUTES({ pathname })
-}
+    const onNavigate = (pathname) => {
+      document.body.innerHTML = ROUTES({ pathname })
+    }
 
-const newBillMocked=new NewBill({
-  document,
-  onNavigate,
-  localStorage:window.localStorage,
-  store:mockStore,
-})
+    const newBillMocked = new NewBill({
+      document,
+      onNavigate,
+      localStorage: window.localStorage,
+      store: mockStore,
+    })
 
-const mockeventvalidfile = {
-  preventDefault: jest.fn(),
-  target: {
-    value: 'C:\fakepath\database.png'
-  }
-}
-
-const mockEvent = {
-  preventDefault: jest.fn(),
-  target: {
-    querySelector: jest.fn().mockImplementation((selector) => {
-      switch (selector) {
-        case 'select[data-testid="expense-type"]': return { value: 'type' };
-        case 'input[data-testid="expense-name"]': return { value: 'name' };
-        case 'input[data-testid="amount"]': return { value: '100' };
-        case 'input[data-testid="datepicker"]': return { value: '2022-01-01' };
-        case 'input[data-testid="vat"]': return { value: '20' };
-        case 'input[data-testid="pct"]': return { value: '10' };
-        case 'textarea[data-testid="commentary"]': return { value: 'commentary' };
-        default: return null;
+    const mockeventvalidfile = {
+      preventDefault: jest.fn(),
+      target: {
+        value: 'C:\fakepath\database.png'
       }
-    }),
-  },
-};
-jest.mock("../app/store", () => mockStore)  //create
+    }
+
+    const mockEvent = {
+      preventDefault: jest.fn(),
+      target: {
+        querySelector: jest.fn().mockImplementation((selector) => {
+          switch (selector) {
+            case 'select[data-testid="expense-type"]': return { value: 'type' };
+            case 'input[data-testid="expense-name"]': return { value: 'name' };
+            case 'input[data-testid="amount"]': return { value: '100' };
+            case 'input[data-testid="datepicker"]': return { value: '2022-01-01' };
+            case 'input[data-testid="vat"]': return { value: '20' };
+            case 'input[data-testid="pct"]': return { value: '10' };
+            case 'textarea[data-testid="commentary"]': return { value: 'commentary' };
+            default: return null;
+          }
+        }),
+      },
+    };
+    jest.mock("../app/store", () => mockStore)  //create
 
 
 
-  describe("When an error occurs on API", () => {
-    beforeEach(() => {
+    describe("When an error occurs on API", () => {
+      beforeEach(() => {
 
-      consoleSpy = jest.spyOn(console, 'error');
-      jest.spyOn(mockStore, "bills")
-      Object.defineProperty(
+        consoleSpy = jest.spyOn(console, 'error');
+        jest.spyOn(mockStore, "bills")
+        Object.defineProperty(
           window,
           'localStorage',
           { value: localStorageMock }
-      )
-      window.localStorage.setItem('user', JSON.stringify({
-        type: 'Employee',
-        email: "e@e"
-      }))
-      const root = document.createElement("div")
-      root.setAttribute("id", "root")
-      document.body.appendChild(root)
-      router()
-    })
-    afterEach(()=>{
-      consoleSpy.mockRestore();
-    })
-    
-    test("fetches bills from an API and fails with 404 message error", async () => {
+        )
+        window.localStorage.setItem('user', JSON.stringify({
+          type: 'Employee',
+          email: "e@e"
+        }))
+        const root = document.createElement("div")
+        root.setAttribute("id", "root")
+        document.body.appendChild(root)
+        router()
+      })
+      afterEach(() => {
+        consoleSpy.mockRestore();
+      })
 
-      mockStore.bills.mockImplementationOnce(() => {
-        return {
-          create : () =>  {                                       
-            return Promise.reject(new Error("Erreur 404"))
+      test("fetches bills from an API and fails with 404 message error", async () => {
+
+        mockStore.bills.mockImplementationOnce(() => {
+          return {
+            create: () => {
+              return Promise.reject(new Error("Erreur 404"))
+            }
           }
-        }})
-      window.onNavigate(ROUTES_PATH.NewBill)
-      newBillMocked.handleChangeFile(mockeventvalidfile)
-      await new Promise(process.nextTick);
-      await waitFor(() => {
+        })
+        window.onNavigate(ROUTES_PATH.NewBill)
+        newBillMocked.handleChangeFile(mockeventvalidfile)
+        await new Promise(process.nextTick);
+        await waitFor(() => {
           expect(consoleSpy).toHaveBeenCalledWith(new Error("Erreur 404"));
         });
-    
-    })
 
-    test("fetches messages from an API and fails with 500 message error", async () => {
+      })
 
-      mockStore.bills.mockImplementationOnce(() => {
-        return {
-          update : () =>  {
-            return Promise.reject(new Error("Erreur 500"))
+      test("fetches messages from an API and fails with 500 message error", async () => {
+
+        mockStore.bills.mockImplementationOnce(() => {
+          return {
+            update: () => {
+              return Promise.reject(new Error("Erreur 500"))
+            }
           }
-        }})
+        })
 
-      window.onNavigate(ROUTES_PATH.NewBill)
-      newBillMocked.handleSubmit(mockEvent)
-      await new Promise(process.nextTick);
-      await waitFor(() => {
+        window.onNavigate(ROUTES_PATH.NewBill)
+        newBillMocked.handleSubmit(mockEvent)
+        await new Promise(process.nextTick);
+        await waitFor(() => {
           expect(consoleSpy).toHaveBeenCalledWith(new Error("Erreur 500"));
         });
-    
-    
+
+
+      })
     })
-  })
 
   })
 })
