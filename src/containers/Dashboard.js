@@ -86,9 +86,9 @@ export default class {
     this.document = document
     this.onNavigate = onNavigate
     this.store = store
-    $('#arrow-icon1').click((e) => this.handleShowTickets(e, bills, 1))
-    $('#arrow-icon2').click((e) => this.handleShowTickets(e, bills, 2))
-    $('#arrow-icon3').click((e) => this.handleShowTickets(e, bills, 3))
+    $('#arrow-icon1').click((e) => this.handleShowTickets(e, bills, 1))          //index is set to 1 for first arrow icon
+    $('#arrow-icon2').click((e) => this.handleShowTickets(e, bills, 2))           // index 2 for second icon
+    $('#arrow-icon3').click((e) => this.handleShowTickets(e, bills, 3))         // index 3 for third icon
     new Logout({ localStorage, onNavigate })
   }
 

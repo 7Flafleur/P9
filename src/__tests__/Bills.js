@@ -42,6 +42,8 @@ describe("Given I am connected as an employee", () => {
 
   describe("When I am on Bills Page", () => {
     document.body.innerHTML = BillsUI({ data: bills }) //when on Bills page, body always needs to be rendered with billsUI
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     test("Then bill icon in vertical layout should be highlighted", async () => {
 
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
@@ -59,6 +61,7 @@ describe("Given I am connected as an employee", () => {
       expect(windowIcon).toHaveClass('active-icon')
 
     })
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     test("Then bills should be ordered from earliest to latest", () => {
       let dates = Array.from(document.querySelectorAll(".date")).map(el => el.innerHTML);
       // //console.log(dates)
@@ -70,7 +73,7 @@ describe("Given I am connected as an employee", () => {
       expect(dates).toEqual(datesSorted)
     })
 
-    //////////////////////////////TEST ORIGINAL
+    //////////////////////////////TEST ORIGINAL///////////////////////////////////////////////////////////////////////////
 
     // document.body.innerHTML = BillsUI({ data: bills })
     // const dates = screen.getAllByText(/^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/i).map(a => a.innerHTML)
@@ -78,6 +81,7 @@ describe("Given I am connected as an employee", () => {
     // const datesSorted = [...dates].sort(antiChrono)
     // expect(dates).toEqual(datesSorted)
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     test("Clicking on newBills button should redirect me to NewBills page", () => {
       realbills = new RealBills({
         document: document,
@@ -102,6 +106,8 @@ describe("Given I am connected as an employee", () => {
 
     });
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     test("Clicking on eye icon opens up modal with bill in it", () => {
 
       realbills = new RealBills({
@@ -111,7 +117,6 @@ describe("Given I am connected as an employee", () => {
         localStorage: localStorage
       });
 
-      //console.log(mockStore)
 
       // Mock jQuery's modal function
       $.fn.modal = jest.fn();
@@ -126,15 +131,14 @@ describe("Given I am connected as an employee", () => {
       // Check that the modal function was called
       expect($.fn.modal).toHaveBeenCalledWith('show');
 
-      // const modale = dom.screen.getByTestId('modal-dialog')
-      // expect(modale).toBeTruthy()
+
 
     })
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     test('getBills calls store methods and returns formatted bills', async () => {
 
 
-      // Arrange, create mock data to mock successfull get retrieval from store
+      // create mock data to mock successfull get retrieval from store
       const mockBills = [
         { date: '2022-01-01', status: 'pending' },
         { date: '2022-02-01', status: 'accepted' },
@@ -156,11 +160,12 @@ describe("Given I am connected as an employee", () => {
 
       // 
       const bills = await realbills.getBills();
-
-      // Assert
+      
       expect(mockStore.bills).toHaveBeenCalled();
       expect(mockStore.list).toHaveBeenCalled();
       expect(bills).toHaveLength(mockBills.length);
+
+      //check that every mocked bill has become bill with formatted date and status
       for (let i = 0; i < mockBills.length; i++) {
         expect(bills[i]).toEqual({
           ...mockBills[i],
@@ -170,7 +175,7 @@ describe("Given I am connected as an employee", () => {
       }
     });
 
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
     test("getBills handles errors in formatDate", async () => {
       jest.mock('../app/format.js', () => ({
         formatDate: jest.fn(() => { throw new Error("formatDate error"); }),
@@ -184,7 +189,6 @@ describe("Given I am connected as an employee", () => {
 
       try {
         // Call formatDate with a valid date string
-        //console.log("Formatedate error", formatDate('2022-01-01'));
       } catch (error) {
         // Check that an error was logged
         expect(consoleSpy).toHaveBeenCalledWith(new Error("formatDate error"), 'for', expect.anything());
@@ -194,7 +198,7 @@ describe("Given I am connected as an employee", () => {
   })
 
 })
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // test d'intégration GET
 describe("Given I am a user connected as Employee", () => {
@@ -220,7 +224,7 @@ describe("Given I am a user connected as Employee", () => {
   //number of bills in store 
 
   describe("When I navigate to Bills page", () => {
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     test("fetches bills from mock API GET", async () => {
 
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
@@ -236,7 +240,6 @@ describe("Given I am a user connected as Employee", () => {
       const BillsList = await mockStore.bills().list();
       const numberOfBills = BillsList.length;
 
-      ////console.log("Number of bills in store",numberOfBills)
 
 
       //check if headers are correctly imported
@@ -253,11 +256,10 @@ describe("Given I am a user connected as Employee", () => {
       
       //wait for correct number of bills to be retrieved
       const tableRows = dom.screen.getAllByRole('row')
-      ////console.log("number of rows displayed",tableRows.length)
       expect(tableRows.length).toBe(numberOfBills + 1) //tableheaders count as rows
 
     })
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     describe("When an API error occurs", () => {
       beforeEach(() => {
@@ -276,7 +278,7 @@ describe("Given I am a user connected as Employee", () => {
         document.body.appendChild(root)
         router()
       })
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       test("tries to fetch bills, fails with 404 error", async () => {
 
         //mock bills method used for GET requests
@@ -292,7 +294,7 @@ describe("Given I am a user connected as Employee", () => {
         const message = await dom.screen.getByText(/Erreur 404/)
         expect(message).toBeTruthy()
       })
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       test("tries to fetch bills, returns error 500", async () => {
 
         //mock bills method used for GET requests
