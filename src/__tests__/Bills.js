@@ -108,7 +108,7 @@ describe("Given I am connected as an employee", () => {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    test("Clicking on eye icon opens up modal with bill in it", () => {
+    test("Clicking on eye icon opens up modal with correct bill img in it", () => {
 
       realbills = new RealBills({
         document: document,
