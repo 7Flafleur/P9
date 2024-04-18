@@ -63,7 +63,7 @@ describe("Given I am connected as an employee", () => {
     })
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     test("Then bills should be ordered from earliest to latest", () => {
-      let dates = Array.from(document.querySelectorAll(".date")).map(el => el.innerHTML);
+      let dates = Array.from(document.querySelectorAll(".date")).map(el => el.innerHTML);   //get date 
       // //console.log(dates)
 
       dates = dates.map(convertDateFormat);
@@ -122,14 +122,27 @@ describe("Given I am connected as an employee", () => {
       $.fn.modal = jest.fn();
 
       const eye = document.querySelector("[data-billid='47qAXb6fIm2zOKkLzMro']");
+      const eyeurl=eye.getAttribute('data-bill-url');
+      console.log(eyeurl)
+     
 
       eye.addEventListener('click', realbills.handleClickIconEye(eye))
 
       dom.fireEvent.click(eye)
 
+      const modal=document.querySelector("#modaleFile")
+
+      const img=modal.querySelector("img")
+
+      const imgurl=img.getAttribute("src")
+
+      console.log(imgurl)
+
 
       // Check that the modal function was called
       expect($.fn.modal).toHaveBeenCalledWith('show');
+    
+       expect(img).toHaveAttribute("src",imgurl)
 
 
 

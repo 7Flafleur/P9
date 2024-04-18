@@ -14,7 +14,7 @@ const row = (bill) => {
     <tr>
       <td>${bill.type}</td>
       <td>${bill.name}</td>
-      <td class="date">${bill.date}</td>
+      <td class="date">${bill.date}</td>                 
       <td>${bill.amount} €</td>
       <td>${bill.status}</td>
       <td>
@@ -38,8 +38,10 @@ export default ({ data: bills=[], loading, error }) => {
           bills.forEach((bill)=>{
           //  console.log("original date bills ui"
           //  ,bill.originaldate)
-
+          // console.log(bill.date,"is",typeof(bill.date))
+          
            bill.date = convertDateFormat(bill.date)      //
+          //  console.log("converted date",bill.date,"is",typeof(bill.date))
      
           })
           bills=bills.sort(compareBillDatesDesc1)
