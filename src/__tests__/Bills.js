@@ -157,7 +157,7 @@ describe("Given I am connected as an employee", () => {
       })
 
       // 
-      const bills = await realbills.getBills();
+      const bills = await realbills.getBills(mockBills);
 
       // Assert
       expect(mockStore.bills).toHaveBeenCalled();
@@ -171,8 +171,9 @@ describe("Given I am connected as an employee", () => {
         });
       }
     });
-
-
+    
+    console.log("Bills", bills)
+    
 
     
   })
